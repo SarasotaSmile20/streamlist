@@ -1,4 +1,3 @@
-// src/utils/tmdb.js
 import axios from "axios";
 
 const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
@@ -10,9 +9,7 @@ const client = axios.create({
 });
 
 export async function searchMovies(query, page = 1) {
-  if (!API_KEY) {
-    throw new Error("Missing REACT_APP_TMDB_API_KEY");
-  }
+  if (!API_KEY) throw new Error("Missing REACT_APP_TMDB_API_KEY");
   if (!query?.trim()) return { results: [], page: 1, total_pages: 0 };
   const { data } = await client.get("/search/movie", {
     params: { query, page, include_adult: false },
@@ -20,6 +17,39 @@ export async function searchMovies(query, page = 1) {
   return data;
 }
 
-export function posterUrl(path, size = "w342") {
-  return path ? `https://image.tmdb.org/t/p/${size}${path}` : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+export async function getMovie(id) {
+  if (!API_KEY) throw new Error("Missing REACT_APP_TMDB_API_KEY");
+  const { data } = await client.get(`/movie/${id}`, {
+    params: { append_to_response: "credits,videos" },
+  });
+  return data;
 }
+
+export function posterUrl(path, size = "w342") {
+  return path
+    ? `https://image.tmdb.org/t/p/${size}${path}`
+    : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+}
+
+// Common TMDB genre IDs → names (static map sufficient for UI)
+export const GENRE_NAMES = {
+  28: "Action",
+  12: "Adventure",
+  16: "Animation",
+  35: "Comedy",
+  80: "Crime",
+  99: "Documentary",
+  18: "Drama",
+  10751: "Family",
+  14: "Fantasy",
+  36: "History",
+  27: "Horror",
+  10402: "Music",
+  9648: "Mystery",
+  10749: "Romance",
+  878: "Science Fiction",
+  10770: "TV Movie",
+  53: "Thriller",
+  10752: "War",
+  37: "Western"
+};

@@ -4,6 +4,8 @@ import StreamList from "./Components/StreamList";
 import Movies from "./Components/Movies";
 import Cart from "./Components/Cart";
 import About from "./Components/About";
+import Watchlist from "./Components/Watchlist";
+import MovieDetail from "./Components/MovieDetail";
 
 export default function App() {
   return (
@@ -13,6 +15,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<StreamList />} />
           <Route path="/movies" element={<Movies />} />
+          <Route path="/movies/:id" element={<MovieDetail />} />
+          <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/about" element={<About />} />
         </Routes>
