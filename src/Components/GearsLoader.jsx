@@ -1,5 +1,5 @@
 import React from "react";
-import "./theme-steampunk.css";
+import "@app/theme-steampunk.css";
 import gears from "../assets/gears.gif";
 
 export default function GearsLoader({ show = false }) {

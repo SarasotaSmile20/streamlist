@@ -1,25 +1,25 @@
 // src/App.js
 import "./index.css";                      // Tailwind base
 import "./App.css";                        // App-wide styles (landing, navbar)
-import "./Components/theme-steampunk.css"; // Theme (after Tailwind)
+import "@app/theme-steampunk.css"; // Theme (after Tailwind)
 
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 
 // Landing (login)
 import CurtainLogin from "./Components/CurtainLogin";
-import Register from "./Components/Register";
+import Register from "@features/auth/Register";
 
 // Top-level pages
-import StreamList from "./Components/StreamList";
+import StreamList from "@features/lists/StreamList";
 import Movies from "./Components/Movies";
 import MovieDetail from "./Components/MovieDetail";
-import TVTrailer from "./Components/TVTrailer";
-import Watchlist from "./Components/Watchlist";
+import TVTrailer from "@features/video/TVTrailer";
+import Watchlist from "@features/lists/Watchlist";
 import Cart from "./Components/Cart";
 import About from "./Components/About";
 
 // Layout for post-login pages
-import AppLayout from "./layouts/AppLayout";
+import AppLayout from "@app/AppLayout";
 
 function RequireAuth() {
   const authed = !!localStorage.getItem("sl_user");

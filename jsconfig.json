@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@features/*": ["features/*"],
+      "@ui/*": ["ui/*"],
+      "@hooks/*": ["hooks/*"],
+      "@utils/*": ["utils/*"],
+      "@services/*": ["services/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
+

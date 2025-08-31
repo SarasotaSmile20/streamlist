@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { searchMovies, posterUrl } from "../utils/tmdb";
+import { searchMovies, posterUrl } from "@services/tmdb";
 import { logEvent } from "../utils/eventLogger";
 
 /**

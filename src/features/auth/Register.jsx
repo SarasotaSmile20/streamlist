@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { demoHashPassword } from "../utils/passwordDemo";
+import { demoHashPassword } from "@utils/passwordDemo";
 
 function loadAccounts() {
   try {
@@ -121,4 +121,3 @@ export default function Register() {
     </main>
   );
 }
-

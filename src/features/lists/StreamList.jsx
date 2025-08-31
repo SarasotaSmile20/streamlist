@@ -1,7 +1,7 @@
 // src/Components/StreamList.jsx
 import { useRef, useState, useMemo } from "react";
-import ItemRow from "./ItemRow";
-import { usePersistentList } from "../hooks/usePersistentList";
+import ItemRow from "@features/lists/ItemRow";
+import { usePersistentList } from "@hooks/usePersistentList";
 
 const COMMON_GENRES = [
   "Action", "Adventure", "Animation", "Comedy", "Crime", "Documentary", "Drama",

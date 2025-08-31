@@ -1,6 +1,6 @@
 import React from "react";
-import { useAirship } from "./AirshipProvider";
-import "./theme-steampunk.css";
+import { useAirship } from "../../Components/AirshipProvider";
+import "app/theme-steampunk.css";
 
 export default function AddToFavoritesButton({
   movie, onAdd,

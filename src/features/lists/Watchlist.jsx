@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import useLocalStorage from "../hooks/useLocalStorage";
-import { posterUrl } from "../utils/tmdb";
-import { usePersistentList } from "../hooks/usePersistentList";
-import { logEvent } from "../utils/eventLogger";
+import useLocalStorage from "@hooks/useLocalStorage";
+import { posterUrl } from "@services/tmdb";
+import { usePersistentList } from "@hooks/usePersistentList";
+import { logEvent } from "@utils/eventLogger";
 
 export default function Watchlist() {
   const [favorites, setFavorites] = useLocalStorage("streamlist:tmdb:favorites", []);

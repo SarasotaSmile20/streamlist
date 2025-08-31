@@ -1,6 +1,6 @@
 import React from "react";
-import "./theme-steampunk.css";
-import tv from "../assets/tv.gif";
+import "@app/theme-steampunk.css";
+import tv from "../../assets/tv.gif";
 
 export default function TVTrailer({ youtubeKey, videoSrc }) {
   return (

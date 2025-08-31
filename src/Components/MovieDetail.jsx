@@ -1,14 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { getMovie, posterUrl } from "../utils/tmdb";
+import { getMovie, posterUrl } from "@services/tmdb";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { usePersistentList } from "../hooks/usePersistentList";
 import { logEvent } from "../utils/eventLogger";
 
 // steampunk components
-import TVTrailer from "./TVTrailer";
-import AddToFavoritesButton from "./AddToFavoritesButton";
-import AddToWatchlistButton from "./AddToWatchlistButton";
+import TVTrailer from "@features/video/TVTrailer";
+import AddToFavoritesButton from "@features/lists/AddToFavoritesButton";
+import AddToWatchlistButton from "@features/lists/AddToWatchlistButton";
 
 export default function MovieDetail() {
   const { id } = useParams();
