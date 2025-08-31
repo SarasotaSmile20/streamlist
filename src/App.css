@@ -87,7 +87,7 @@
 }
 
 .nav-link {
-  color: var(--text);
+  color: var(--soft-white);
   text-decoration: none;
   font-weight: 700;
   padding: .55rem .75rem;
@@ -100,22 +100,22 @@
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, .04);
-  border-color: rgba(156, 122, 59, .18);
-  box-shadow: 0 0 0 2px rgba(156, 122, 59, .14) inset;
+  background: rgba(255, 255, 255, .06);
+  border-color: rgba(162, 74, 116, .28);
+  box-shadow: 0 0 0 2px rgba(46, 134, 167, .24) inset;
 }
 
 .nav-link--active {
-  background: linear-gradient(90deg, rgba(156, 122, 59, .16), rgba(180, 147, 77, .14));
-  border: 1px solid rgba(156, 122, 59, .32);
-  box-shadow: 0 0 0 2px rgba(156, 122, 59, .18) inset, 0 8px 18px rgba(0, 0, 0, .25);
+  background: linear-gradient(90deg, rgba(62, 93, 133, .25), rgba(59, 47, 87, .22));
+  border: 1px solid rgba(46, 134, 167, .35);
+  box-shadow: 0 0 0 2px rgba(162, 74, 116, .22) inset, 0 8px 18px rgba(0, 0, 0, .25);
 }
 
 /* outline gold button (Logout) */
 .btn-gold-outline {
   background: transparent;
-  color: var(--text);
-  border: 1px solid rgba(156, 122, 59, .55);
+  color: var(--soft-white);
+  border: 1px solid rgba(46, 134, 167, .65); /* teal */
   border-radius: 999px;
   padding: .55rem .9rem;
   font-weight: 700;
@@ -126,7 +126,7 @@
 
 .btn-gold-outline:hover {
   filter: brightness(1.05);
-  box-shadow: 0 0 0 2px rgba(156, 122, 59, .2) inset, 0 8px 18px rgba(0, 0, 0, .25);
+  box-shadow: 0 0 0 2px rgba(162, 74, 116, .28) inset, 0 8px 18px rgba(0, 0, 0, .25);
 }
 
 .btn-gold-outline:active {

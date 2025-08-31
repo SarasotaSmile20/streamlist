@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 import useLocalStorage from "@hooks/useLocalStorage";
 import { posterUrl } from "@services/tmdb";
 import { usePersistentList } from "@hooks/usePersistentList";
+import { VOCAB } from "@utils/vocabulary";
 import { logEvent } from "@utils/eventLogger";
 
 export default function Watchlist() {
   const [favorites, setFavorites] = useLocalStorage("streamlist:tmdb:favorites", []);
-  const { dispatch } = usePersistentList();
+  const { items, dispatch } = usePersistentList();
 
   const hasItems = favorites.length > 0;
   const watchedCount = useMemo(() => favorites.filter(f => f.status === "watched").length, [favorites]);
@@ -20,6 +21,12 @@ export default function Watchlist() {
     logEvent("favorite_remove", { movieId: id });
   }
   function addToStreamList(item) {
+    const key = String(item?.title || "").trim().toLowerCase().replace(/\s+/g, " ");
+    const exists = items.some((i) => String(i.title || "").trim().toLowerCase().replace(/\s+/g, " ") === key);
+    if (exists) {
+      alert(`Already in Cabinet: ${item.title}`);
+      return;
+    }
     dispatch({ type: "ADD", title: item.title, genre: "" });
     logEvent("tmdb_add_to_streamlist", { movieId: item.id, title: item.title });
     alert(`Added to Cabinet: ${item.title}`);
@@ -35,7 +42,7 @@ export default function Watchlist() {
       <div className="hint" style={{ marginBottom: 8 }}>
         {hasItems
           ? <>You have <strong>{favorites.length}</strong> saved • <strong>{watchedCount}</strong> watched</>
-          : <span className="muted">Your cabinet is empty. Add some from the <Link to="/movies" className="link">Summon Films</Link> page.</span>
+          : <span className="muted">Your cabinet is empty. Add some from the <Link to="/movies" className="link">{VOCAB.search}</Link> page.</span>
         }
       </div>
 
@@ -58,7 +65,7 @@ export default function Watchlist() {
                     <button className="btn" onClick={() => toggleStatus(f.id)}>
                       {f.status === "watched" ? "Mark To-Watch" : "Mark Watched"}
                     </button>
-                    <button className="icon-btn" onClick={() => addToStreamList(f)} title="Add to Cabinet">
+                    <button className="icon-btn" onClick={() => addToStreamList(f)} title={VOCAB.addToList} aria-label={VOCAB.addToList}>
                       <span className="material-icons">playlist_add</span>
                     </button>
                     <button className="icon-btn" onClick={() => removeFav(f.id)} title="Remove from Cabinet">

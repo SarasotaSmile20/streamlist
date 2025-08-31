@@ -24,12 +24,23 @@ function makeItemWithId(id, title, genre = "") {
   };
 }
 
+// Normalize title for duplicate checks
+const normalizeTitle = (t) =>
+  String(t || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+
 // Pure, testable reducer
 function listReducer(state, action) {
   switch (action.type) {
     case "ADD": {
       const t = action.title?.trim();
       if (!t) return state;
+      // Prevent duplicates by normalized title
+      const key = normalizeTitle(t);
+      const exists = state.some((i) => normalizeTitle(i.title) === key);
+      if (exists) return state;
       const nextId = getNextId(state);
       return [makeItemWithId(nextId, t, action.genre), ...state];
     }

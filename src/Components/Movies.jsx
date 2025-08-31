@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { searchMovies, posterUrl } from "@services/tmdb";
+import { VOCAB } from "@utils/vocabulary";
 import { logEvent } from "../utils/eventLogger";
 
 /**
@@ -67,12 +68,12 @@ export default function Movies() {
           >
             <input
               className="input"
-              placeholder="Summon films…"
+              placeholder={`${VOCAB.search}…`}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <button className="btn" type="submit" disabled={loading}>
-              {loading ? "Summoning…" : "Summon Films"}
+            <button className="btn" type="submit" disabled={loading} aria-label={VOCAB.search}>
+              {loading ? "Summoning…" : VOCAB.search}
             </button>
             {query && (
               <button className="link" type="button" onClick={clearSearch}>
@@ -83,16 +84,17 @@ export default function Movies() {
 
           {err && <p className="muted">{err}</p>}
 
-          <ul className="list">
+          <ul className="list movie-results">
             {results.map((m) => (
-              <li key={m.id} className="movie-row">
+              <li key={m.id} className="movie-result">
                 <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
                   {m.poster_path ? (
                     <img
                       src={posterUrl(m.poster_path, "w154")}
                       alt={m.title}
                       loading="lazy"
-                      style={{ borderRadius: 8, width: 92 }}
+                      className="poster-thumb"
+                      style={{ width: 92 }}
                     />
                   ) : (
                     <div style={{
@@ -103,14 +105,17 @@ export default function Movies() {
                       <span className="material-icons">image_not_supported</span>
                     </div>
                   )}
-                  <div>
+                  <div style={{ display: "grid", gap: 4 }}>
                     <Link to={`/movie/${m.id}`} className="link">{m.title}</Link>
-                    {m.release_date && (
-                      <div className="muted" style={{ marginTop: 4 }}>
-                        {m.release_date}
-                      </div>
-                    )}
+                    <div className="muted">
+                      {m.release_date ? m.release_date : "—"}
+                    </div>
                   </div>
+                </div>
+                <div className="actions">
+                  <Link to={`/movie/${m.id}`} className="btn btn-small" aria-label={VOCAB.details}>
+                    {VOCAB.details}
+                  </Link>
                 </div>
               </li>
             ))}

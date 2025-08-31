@@ -1,6 +1,7 @@
 // src/Components/StreamList.jsx
 import { useRef, useState, useMemo } from "react";
 import ItemRow from "@features/lists/ItemRow";
+import { VOCAB } from "@utils/vocabulary";
 import { usePersistentList } from "@hooks/usePersistentList";
 
 const COMMON_GENRES = [
@@ -290,7 +291,7 @@ export default function StreamList() {
       <div className="container-1120">
         {/* Title row */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <h1 className="title" style={{ margin: 0 }}>
+          <h1 className="title font-cinzelDecorative text-primary title-engrave" style={{ margin: 0 }}>
             <span className="material-icons title-icon">playlist_add_check</span>
             StreamList
           </h1>
@@ -320,7 +321,7 @@ export default function StreamList() {
             placeholder="Add a movie or show…"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            aria-label="Add to Cabinet"
+            aria-label={VOCAB.addToList}
             autoComplete="off"
             onKeyDown={(e) => e.key === "Enter" && submit(e)}
             style={{ flex: 2 }}

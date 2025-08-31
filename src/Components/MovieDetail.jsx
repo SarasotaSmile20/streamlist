@@ -15,7 +15,7 @@ export default function MovieDetail() {
   const [movie, setMovie] = useState(null);
   const [err, setErr] = useState("");
   const [favorites, setFavorites] = useLocalStorage("streamlist:tmdb:favorites", []);
-  const { dispatch } = usePersistentList();
+  const { items, dispatch } = usePersistentList();
 
   const isFav = useMemo(
     () => favorites.some((f) => String(f.id) === String(id)),
@@ -56,8 +56,14 @@ export default function MovieDetail() {
 
   function addToStreamList() {
     const genre = movie?.genres?.[0]?.name || "";
+    const key = String(movie?.title || "").trim().toLowerCase().replace(/\s+/g, " ");
+    const exists = items.some((i) => String(i.title || "").trim().toLowerCase().replace(/\s+/g, " ") === key);
+    if (exists) {
+      return false; // signal duplicate to button for proper messaging
+    }
     dispatch({ type: "ADD", title: movie.title, genre });
     logEvent("tmdb_add_to_streamlist", { movieId: id, title: movie.title, genre });
+    return true;
   }
 
   // Find a YouTube trailer key if present
@@ -68,6 +74,24 @@ export default function MovieDetail() {
   if (err) return <section className="page"><p>{err}</p></section>;
   if (!movie) return <section className="page"><p>Loading…</p></section>;
 
+  const GearIcon = () => (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+      style={{ opacity: 0.8 }}
+    >
+      <path
+        d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm9 4.5-.02-.34-2.13-.77c-.12-.38-.28-.75-.48-1.09l1.07-1.93-.24-.26-1.49-1.49-.26-.24-1.93 1.07c-.34-.2-.71-.36-1.09-.48l-.77-2.13L13 3h-2l-.34.02-.77 2.13c-.38.12-.75.28-1.09.48L6.87 4.56l-.26.24L5.12 6.3l-.24.26 1.07 1.93c-.2.34-.36.71-.48 1.09l-2.13.77L3 12v2l.02.34 2.13.77c.12.38.28.75.48 1.09L4.56 18.13l.24.26 1.49 1.49.26.24 1.93-1.07c.34.2.71.36 1.09.48l.77 2.13L11 21h2l.34-.02.77-2.13c.38-.12.75-.28 1.09-.48l1.93 1.07.26-.24 1.49-1.49.24-.26-1.07-1.93c.2-.34.36-.71.48-1.09l2.13-.77L21 14v-2Z"
+        fill="rgba(237,239,243,.7)"
+      />
+    </svg>
+  );
+
   return (
     <section className="page">
       <div className="toolbar" style={{ marginBottom: 8 }}>
@@ -75,6 +99,8 @@ export default function MovieDetail() {
         <Link to="/watchlist" className="btn">Open Cabinet</Link>
       </div>
 
+      {/* Dossier */}
+      <h2 className="section-title" aria-label="Dossier"><GearIcon /> Dossier</h2>
       <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 16 }}>
         {movie.poster_path && (
           <img
@@ -97,38 +123,39 @@ export default function MovieDetail() {
           {movie.tagline ? <p className="muted" style={{ fontStyle: "italic" }}>{movie.tagline}</p> : null}
           <p>{movie.overview || "No overview available."}</p>
 
-          {/* Steampunk buttons with airship */}
-          <div className="toolbar" style={{ gap: 8 }}>
+          {/* Actions */}
+          <div className="btn-row" style={{ gap: 8 }}>
             <AddToFavoritesButton
               movie={movie}
               onAdd={toggleFavorite}
-              className="btn"
-              label={isFav ? "★ Remove Wax-Sealed" : "☆ Add Wax-Sealed"}
               message={isFav ? "Removed from Wax-Sealed" : "Added to Wax-Sealed"}
             />
             <AddToWatchlistButton
               movie={movie}
               onAdd={addToStreamList}
               className="btn"
-              label="+ Add to Cabinet"
               message="Added to Cabinet"
             />
           </div>
         </div>
       </div>
 
-      {/* Embedded trailer in TV frame */}
-      <section style={{ marginTop: 16 }}>
-        <TVTrailer youtubeKey={trailerKey} />
+      {/* Excerpts — embedded trailer in TV frame */}
+      <section style={{ marginTop: 16 }} aria-label="Excerpts">
+        <h2 className="section-title"><GearIcon /> Excerpts</h2>
+        <div className="tv-holder-compact">
+          <TVTrailer youtubeKey={trailerKey} />
+        </div>
       </section>
 
       {movie.credits?.cast?.length ? (
-        <section style={{ marginTop: 16 }}>
-          <h2 className="title" style={{ fontSize: "1.2rem" }}>Top Cast</h2>
-          <ul className="list">
-            {movie.credits.cast.slice(0, 8).map((c) => (
-              <li className="card" key={c.cast_id || `${c.id}-${c.credit_id}`}>
-                {c.name} — <span className="muted">{c.character}</span>
+        <section className="cast-section" aria-label="Provenance">
+          <h2 className="section-title"><GearIcon /> Provenance</h2>
+          <ul className="cast-grid">
+            {movie.credits.cast.slice(0, 12).map((c) => (
+              <li className="cast-card" key={c.cast_id || `${c.id}-${c.credit_id}`}>
+                <strong className="text-primary">{c.name}</strong>
+                <span className="muted">{c.character || "—"}</span>
               </li>
             ))}
           </ul>

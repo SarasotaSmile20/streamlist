@@ -1,0 +1,70 @@
+/* NavBar parchment styling and gear icon */
+
+.navbar {
+  /* Deep blue → purple with subtle magenta glow */
+  background:
+    radial-gradient(900px 520px at 82% 34%, rgba(162, 74, 116, 0.15), transparent 65%),
+    linear-gradient(135deg, var(--deep-blue) 0%, var(--purple) 70%);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+}
+
+/* Brand text in Macondo, dark iron color for readability */
+.brand, .brand-text { color: var(--soft-white); }
+
+.brand-text {
+  font-family: "Macondo", "Macondo Swash Caps", "Cinzel", serif;
+}
+
+/* Replace crest with a small gear icon */
+.brand-crest {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--magenta);
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.brand-crest .gear-icon {
+  width: 16px;
+  height: 16px;
+  animation: navbar-gear-spin 2.4s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+@keyframes navbar-gear-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-crest .gear-icon { animation: none; }
+}
+
+/* Nav links: dark iron text with brass shimmer underline on hover */
+.nav-link {
+  color: var(--soft-white);
+  position: relative;
+  background: transparent;
+  border-color: transparent;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: .6rem;
+  right: .6rem;
+  bottom: 6px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(162,74,116,.2), rgba(46,134,167,.9), rgba(162,74,116,.2));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+  border-radius: 2px;
+}
+
+.nav-link:hover::after { transform: scaleX(1); }
+.nav-link--active::after { transform: scaleX(1); }
