@@ -1,0 +1,389 @@
+/* =========================================================
+   Steampunk / Victorian Theme — App-wide styling
+   ========================================================= */
+
+/* Palette tokens (aligned with your Tailwind colors) */
+:root {
+  --deep-blue: #1E6A8C;
+  --teal: #2E86A7;
+  --purple: #3B2F57;
+  --magenta: #A24A74;
+
+  --gold: #C19A3A;
+  --brass: #9C7A3B;
+  --copper: #7B5A3D;
+
+  --soft-white: #EDEFF3;
+  --light-gray: #C9D2DC;
+
+  --wood-dark: #5A3E2B;
+  --wood-deep: #3D2A1F;
+
+  --red-mist: #C75A63;
+  --pink-mist: #D97A85;
+
+  --black-victorian: #1A1A1C;
+  --dark-gray: #2B2A2A;
+}
+
+/* -----------------------------------------
+   Background (post-login) — gradient + gears
+   ----------------------------------------- */
+.app-bg-colors {
+  background:
+    radial-gradient(1200px 600px at 20% 28%, rgba(237, 239, 243, 0.06), transparent 60%),
+    radial-gradient(900px 500px at 82% 34%, rgba(162, 74, 116, 0.25), transparent 65%),
+    radial-gradient(900px 520px at 15% 70%, rgba(30, 106, 140, 0.22), transparent 65%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.78)),
+    linear-gradient(135deg, var(--deep-blue) 0%, var(--purple) 55%, var(--magenta) 100%);
+  background-attachment: fixed;
+  min-height: 100%;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Subtle film grain */
+.app-bg-colors::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: repeating-linear-gradient(0deg,
+      rgba(255, 255, 255, .02) 0 2px,
+      transparent 2px 4px);
+  mix-blend-mode: soft-light;
+}
+
+/* Floating gears on both sides */
+@keyframes gears-float {
+  from {
+    transform: translateY(-6px)
+  }
+
+  to {
+    transform: translateY(6px)
+  }
+}
+
+/* Right side  */
+.app-bg-colors::after {
+  content: "";
+  position: fixed;
+  top: 28vh;
+  right: max(8px, calc((100vw - 1120px) / 2 - 180px));
+  width: 180px;
+  height: 380px;
+  background: url("../assets/gears.gif") no-repeat center / contain;
+  opacity: .22;
+  filter: sepia(.35) saturate(1.05) contrast(1.05);
+  pointer-events: none;
+  z-index: 0;
+  animation: gears-float 14s ease-in-out infinite alternate;
+}
+
+/* Left side anchors to the content column */
+.container-1120::before {
+  content: "";
+  position: fixed;
+  top: 28vh;
+  left: max(8px, calc((100vw - 1120px) / 2 - 180px));
+  width: 180px;
+  height: 380px;
+  background: url("../assets/gears.gif") no-repeat center / contain;
+  opacity: .22;
+  filter: sepia(.35) saturate(1.05) contrast(1.05);
+  pointer-events: none;
+  z-index: 0;
+  animation: gears-float 14s ease-in-out infinite alternate-reverse;
+}
+
+@media (max-width: 1024px) {
+
+  .app-bg-colors::after,
+  .container-1120::before {
+    opacity: .16;
+    width: 140px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .app-bg-colors::after,
+  .container-1120::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .app-bg-colors::after,
+  .container-1120::before {
+    animation: none;
+  }
+}
+
+/* Centered content column utility */
+.container-1120 {
+  max-width: 1120px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Page wrapper spacing */
+.page {
+  padding: 28px 16px 48px;
+}
+
+/* Title */
+.title {
+  font-family: "IM Fell English SC", "Cinzel", serif;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: var(--soft-white);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title-icon {
+  font-size: 26px;
+  opacity: .9;
+}
+
+/* Panel “glass” vibe */
+.panel,
+.form,
+.toolbar,
+.list {
+  background: rgba(13, 17, 26, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) inset, 0 6px 20px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+}
+
+/* Inputs */
+.input {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 16, 24, 0.65);
+  color: var(--soft-white);
+  padding: 10px 12px;
+  border-radius: 14px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.input::placeholder {
+  color: rgba(237, 239, 243, .55);
+}
+
+.input:focus {
+  border-color: var(--magenta);
+  box-shadow: 0 0 0 3px rgba(162, 74, 116, .25);
+  background: rgba(12, 16, 24, .8);
+}
+
+/* Buttons (gold/brass gradient) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0d111a;
+  background: linear-gradient(180deg, var(--gold), var(--brass));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .18);
+  transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+}
+
+.btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Link-like button */
+.btn-ghost {
+  background: transparent;
+  color: var(--soft-white);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 14px;
+  padding: 10px 14px;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, .06);
+}
+
+/* Chips */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--soft-white);
+  background: rgba(17, 23, 35, .7);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, transform .12s ease;
+}
+
+.chip:hover {
+  background: rgba(17, 23, 35, .85);
+  transform: translateY(-1px);
+}
+
+.chip-active {
+  background: radial-gradient(120% 120% at 20% 40%, rgba(162, 74, 116, .35), transparent 60%),
+    rgba(17, 23, 35, .92);
+  border-color: rgba(162, 74, 116, .55);
+  box-shadow: 0 0 0 2px rgba(162, 74, 116, .25);
+}
+
+.chip-icon {
+  font-size: 18px;
+  opacity: .9;
+}
+
+/* Toolbar */
+.toolbar {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 12px 16px;
+  padding: 12px;
+  margin: 16px 0;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.muted {
+  color: rgba(237, 239, 243, .68);
+  font-size: .95rem;
+}
+
+/* Add form layout */
+.form {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto auto;
+  gap: 10px;
+  padding: 12px;
+  margin: 12px 0 8px;
+}
+
+@media (max-width: 900px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* List */
+.list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 10px 12px;
+}
+
+.list li {
+  background: rgba(12, 16, 24, .6);
+  border: 1px solid rgba(255, 255, 255, .06);
+  border-radius: 14px;
+  padding: 14px 12px;
+  margin: 10px 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.list li .actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Dropdown look */
+select.input {
+  padding-right: 32px;
+}
+
+/* Empty state */
+.empty {
+  color: rgba(237, 239, 243, .8);
+  padding: 10px 4px;
+}
+
+/* -----------------------------------------
+   Landing / Login (projector background + glass card)
+   ----------------------------------------- */
+.stage-bg {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background:
+    radial-gradient(1000px 600px at 20% 30%, rgba(237, 239, 243, .08), transparent 60%),
+    linear-gradient(180deg, rgba(0, 0, 0, .45), rgba(0, 0, 0, .85)),
+    url("../assets/victorianprojector.jpg") center / cover no-repeat;
+}
+
+.login-card {
+  width: min(880px, 92vw);
+  background: rgba(13, 17, 26, .60);
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .15);
+  backdrop-filter: blur(6px);
+  padding: 28px;
+}
+
+.brand-title {
+  font-family: "IM Fell English SC", "Cinzel", serif;
+  font-weight: 700;
+  color: #EDEFF3;
+  font-size: clamp(28px, 4vw, 42px);
+  margin: 0 0 6px 0;
+}
+
+.tagline {
+  color: rgba(237, 239, 243, .85);
+  margin: 0 0 18px 0;
+}
+
+.login-form {
+  display: grid;
+  gap: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.actions {
+  margin-top: 6px;
+}
+
+/* Optional: body hook */
+body.curtain-mode {
+  overflow-y: auto;
+}

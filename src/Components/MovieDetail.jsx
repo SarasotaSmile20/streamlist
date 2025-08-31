@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getMovie, posterUrl } from "../utils/tmdb";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { usePersistentList } from "../hooks/usePersistentList";
 import { logEvent } from "../utils/eventLogger";
+
+// steampunk components
+import TVTrailer from "./TVTrailer";
+import AddToFavoritesButton from "./AddToFavoritesButton";
+import AddToWatchlistButton from "./AddToWatchlistButton";
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -12,12 +17,15 @@ export default function MovieDetail() {
   const [favorites, setFavorites] = useLocalStorage("streamlist:tmdb:favorites", []);
   const { dispatch } = usePersistentList();
 
-  const isFav = favorites.some(f => String(f.id) === String(id));
+  const isFav = useMemo(
+    () => favorites.some((f) => String(f.id) === String(id)),
+    [favorites, id]
+  );
 
   useEffect(() => {
     (async () => {
       try {
-        const data = await getMovie(id); // includes credits + videos via append_to_response
+        const data = await getMovie(id);
         setMovie(data);
         logEvent("tmdb_view_detail", { movieId: data.id, title: data.title });
       } catch (e) {
@@ -28,10 +36,10 @@ export default function MovieDetail() {
   }, [id]);
 
   function toggleFavorite() {
-    setFavorites(prev => {
-      const exists = prev.some(m => String(m.id) === String(id));
+    setFavorites((prev) => {
+      const exists = prev.some((m) => String(m.id) === String(id));
       if (exists) {
-        return prev.filter(m => String(m.id) !== String(id));
+        return prev.filter((m) => String(m.id) !== String(id));
       }
       const f = {
         id: movie.id,
@@ -39,7 +47,7 @@ export default function MovieDetail() {
         poster_path: movie.poster_path,
         release_date: movie.release_date,
         vote_average: movie.vote_average,
-        status: "to-watch"
+        status: "to-watch",
       };
       return [...prev, f];
     });
@@ -47,13 +55,15 @@ export default function MovieDetail() {
   }
 
   function addToStreamList() {
-    const genre = movie.genres?.[0]?.name || "";
+    const genre = movie?.genres?.[0]?.name || "";
     dispatch({ type: "ADD", title: movie.title, genre });
     logEvent("tmdb_add_to_streamlist", { movieId: id, title: movie.title, genre });
-    alert(`Added to StreamList: ${movie.title}${genre ? ` (${genre})` : ""}`);
   }
 
-  const trailer = movie?.videos?.results?.find(v => v.type === "Trailer" && v.site === "YouTube");
+  // Find a YouTube trailer key if present
+  const trailerKey =
+    movie?.videos?.results?.find((v) => v.type === "Trailer" && v.site === "YouTube")
+      ?.key || "";
 
   if (err) return <section className="page"><p>{err}</p></section>;
   if (!movie) return <section className="page"><p>Loading…</p></section>;
@@ -61,8 +71,8 @@ export default function MovieDetail() {
   return (
     <section className="page">
       <div className="toolbar" style={{ marginBottom: 8 }}>
-        <Link to="/movies" className="btn">← Back to Search</Link>
-        <Link to="/watchlist" className="btn">Open Watchlist</Link>
+        <Link to="/movies" className="btn">← Back to Summons</Link>
+        <Link to="/watchlist" className="btn">Open Cabinet</Link>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 16 }}>
@@ -80,37 +90,43 @@ export default function MovieDetail() {
             <span>{movie.release_date?.slice(0,4) || "—"}</span>
             <span>{movie.runtime ? `${movie.runtime} min` : "—"}</span>
             <span>{movie.status || "—"}</span>
-            <span>Rating: {typeof movie.vote_average === "number" ? movie.vote_average.toFixed(1) : "—"}</span>
+            <span>
+              Rating: {typeof movie.vote_average === "number" ? movie.vote_average.toFixed(1) : "—"}
+            </span>
           </div>
           {movie.tagline ? <p className="muted" style={{ fontStyle: "italic" }}>{movie.tagline}</p> : null}
           <p>{movie.overview || "No overview available."}</p>
 
+          {/* Steampunk buttons with airship */}
           <div className="toolbar" style={{ gap: 8 }}>
-            <button className="btn" onClick={toggleFavorite}>
-              {isFav ? "★ Remove Favorite" : "☆ Add Favorite"}
-            </button>
-            <button className="btn" onClick={addToStreamList}>
-              + Add to StreamList
-            </button>
-            {trailer && (
-              <a
-                className="btn"
-                href={`https://www.youtube.com/watch?v=${trailer.key}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                ▶ Watch Trailer
-              </a>
-            )}
+            <AddToFavoritesButton
+              movie={movie}
+              onAdd={toggleFavorite}
+              className="btn"
+              label={isFav ? "★ Remove Wax-Sealed" : "☆ Add Wax-Sealed"}
+              message={isFav ? "Removed from Wax-Sealed" : "Added to Wax-Sealed"}
+            />
+            <AddToWatchlistButton
+              movie={movie}
+              onAdd={addToStreamList}
+              className="btn"
+              label="+ Add to Cabinet"
+              message="Added to Cabinet"
+            />
           </div>
         </div>
       </div>
+
+      {/* Embedded trailer in TV frame */}
+      <section style={{ marginTop: 16 }}>
+        <TVTrailer youtubeKey={trailerKey} />
+      </section>
 
       {movie.credits?.cast?.length ? (
         <section style={{ marginTop: 16 }}>
           <h2 className="title" style={{ fontSize: "1.2rem" }}>Top Cast</h2>
           <ul className="list">
-            {movie.credits.cast.slice(0, 8).map(c => (
+            {movie.credits.cast.slice(0, 8).map((c) => (
               <li className="card" key={c.cast_id || `${c.id}-${c.credit_id}`}>
                 {c.name} — <span className="muted">{c.character}</span>
               </li>

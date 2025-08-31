@@ -57,7 +57,7 @@ export default function ItemRow({ item, onToggle, onEdit, onDelete }) {
   };
 
   return (
-    <li className="card" style={styles.card}>
+    <li className="item" style={styles.card}>
       <div className="row" style={styles.row}>
         <label className="checkbox" style={styles.checkbox}>
           <input
@@ -124,7 +124,7 @@ export default function ItemRow({ item, onToggle, onEdit, onDelete }) {
                   <option key={g} value={g} />
                 ))}
               </datalist>
-              <button className="btn" onClick={saveEdit} aria-label="Save edits">Save</button>
+              <button className="btn-mini" onClick={saveEdit} aria-label="Save edits">Save</button>
               <button className="link" onClick={cancelEdit} aria-label="Cancel editing">Cancel</button>
             </div>
           )}
@@ -132,17 +132,11 @@ export default function ItemRow({ item, onToggle, onEdit, onDelete }) {
 
         <div className="actions" style={styles.actions}>
           {!editing ? (
-            <button className="icon-btn" onClick={startEdit} title="Edit" aria-label="Edit" style={styles.iconBtn}>
-              <span className="material-icons">edit</span>
-            </button>
+            <button className="btn-mini" onClick={startEdit} title="Edit" aria-label="Edit">Edit</button>
           ) : (
-            <button className="icon-btn" onClick={saveEdit} title="Save" aria-label="Save" style={styles.iconBtn}>
-              <span className="material-icons">check</span>
-            </button>
+            <button className="btn-mini" onClick={saveEdit} title="Save" aria-label="Save">Save</button>
           )}
-          <button className="icon-btn" onClick={() => onDelete(item.id)} title="Delete" aria-label="Delete" style={styles.iconBtn}>
-            <span className="material-icons">delete</span>
-          </button>
+          <button className="btn-mini danger" onClick={() => onDelete(item.id)} title="Delete" aria-label="Delete">Delete</button>
         </div>
       </div>
     </li>

@@ -22,20 +22,20 @@ export default function Watchlist() {
   function addToStreamList(item) {
     dispatch({ type: "ADD", title: item.title, genre: "" });
     logEvent("tmdb_add_to_streamlist", { movieId: item.id, title: item.title });
-    alert(`Added to StreamList: ${item.title}`);
+    alert(`Added to Cabinet: ${item.title}`);
   }
 
   return (
     <section className="page">
       <h1 className="title">
         <span className="material-icons title-icon">bookmark</span>
-        Watchlist
+        Cabinet of Curiosities
       </h1>
 
       <div className="hint" style={{ marginBottom: 8 }}>
         {hasItems
           ? <>You have <strong>{favorites.length}</strong> saved • <strong>{watchedCount}</strong> watched</>
-          : <span className="muted">Your watchlist is empty. Add some from the <Link to="/movies" className="link">Movies</Link> page.</span>
+          : <span className="muted">Your cabinet is empty. Add some from the <Link to="/movies" className="link">Summon Films</Link> page.</span>
         }
       </div>
 
@@ -58,10 +58,10 @@ export default function Watchlist() {
                     <button className="btn" onClick={() => toggleStatus(f.id)}>
                       {f.status === "watched" ? "Mark To-Watch" : "Mark Watched"}
                     </button>
-                    <button className="icon-btn" onClick={() => addToStreamList(f)} title="Add to StreamList">
+                    <button className="icon-btn" onClick={() => addToStreamList(f)} title="Add to Cabinet">
                       <span className="material-icons">playlist_add</span>
                     </button>
-                    <button className="icon-btn" onClick={() => removeFav(f.id)} title="Remove from Watchlist">
+                    <button className="icon-btn" onClick={() => removeFav(f.id)} title="Remove from Cabinet">
                       <span className="material-icons">delete</span>
                     </button>
                   </div>

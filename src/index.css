@@ -1,9 +1,11 @@
-/* light reset and base */
-* { box-sizing: border-box; }
-html, body, #root { height: 100%; }
-body {
-  margin: 0;
-  color: #e5e7eb;
-  background: linear-gradient(120deg, #0f172a, #060b1a 50%, #111827);
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans";
+/* Keep this file minimal so your theme wins the cascade */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fonts already linked in public/index.html — nothing else needed here */
+html,
+body,
+#root {
+  height: 100%;
 }

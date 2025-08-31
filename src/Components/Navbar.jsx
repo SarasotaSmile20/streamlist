@@ -1,35 +1,51 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
+/**
+ * Gold-accent, glassy navbar to match the landing page.
+ * - Brand at left with subtle gold crest dot + wordmark
+ * - Links on the right; active link gets a soft gold glow
+ * - Logout clears sl_user and returns to "/"
+ */
 export default function Navbar() {
   return (
-    <nav className="navbar">
-      <div className="brand">
-        <span className="material-icons">movie</span>
-        <span>StreamList</span>
-      </div>
+    <header className="navbar">
+      <Link to="/streamlist" className="brand" aria-label="StreamList Home">
+        <span className="brand-crest" aria-hidden="true" />
+        <span className="brand-text">EZTechMovie • StreamList</span>
+      </Link>
 
-      <ul className="nav-links">
-        <li>
-          <NavLink to="/" end className={({ isActive }) => (isActive ? "active" : "")}>
-            <span className="material-icons">checklist</span> StreamList
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/movies" className={({ isActive }) => (isActive ? "active" : "")}>
-            <span className="material-icons">local_movies</span> Movies
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/cart" className={({ isActive }) => (isActive ? "active" : "")}>
-            <span className="material-icons">shopping_cart</span> Cart
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to="/about" className={({ isActive }) => (isActive ? "active" : "")}>
-            <span className="material-icons">info</span> About
-          </NavLink>
-        </li>
-      </ul>
-    </nav>
+      <nav className="nav-actions">
+        <NavItem to="/streamlist" label="Checklist" />
+        <NavItem to="/movies" label="Summon Films" />
+        <NavItem to="/cart" label="Cart" />
+        <NavItem to="/about" label="About" />
+        <LogoutButton />
+      </nav>
+    </header>
+  );
+}
+
+function NavItem({ to, label }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        "nav-link" + (isActive ? " nav-link--active" : "")
+      }
+    >
+      {label}
+    </NavLink>
+  );
+}
+
+function LogoutButton() {
+  function handle() {
+    localStorage.removeItem("sl_user");
+    window.location.assign("/");
+  }
+  return (
+    <button type="button" className="btn-gold-outline" onClick={handle}>
+      Take Your Leave
+    </button>
   );
 }

@@ -1,117 +1,319 @@
+/* ===============================
+   Gold/Victorian Theme Tokens
+   =============================== */
 :root {
-  --panel: #111827;
-  --card: #1f2937;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --brand: #22d3ee;
-  --brand2: #a78bfa;
+  --panel: #0b0f14;
+  /* deep charcoal */
+  --card: #101419;
+  /* card base */
+  --text: #ececf1;
+  --muted: #b8b4c7;
+
+  /* Brass palette to match the projector */
+  --brass: #9C7A3B;   /* core brass */
+  --brass-2: #b4934d; /* lighter highlight */
+  --brass-3: #6f532b; /* deeper shadow */
+
+  /* Map legacy gold tokens to brass for consistency */
+  --gold: var(--brass);
+  --gold-2: var(--brass-2);
+  --gold-3: var(--brass-3);
+
+  --pink: #d680b7;
+  /* subtle magenta for input focus ring */
+  --glass: rgba(16, 20, 25, .85);
+  --ring: 0 0 0 3px rgba(214, 128, 183, .35);
 }
 
+/* ===============================
+   App Shell
+   =============================== */
 .app-shell {
-  min-height: 100%;
+  min-height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
+  color: var(--text);
+  background: #070a0f;
 }
 
-/* Navbar */
+/* ===============================
+   NAVBAR (glassy, gold-accent)
+   =============================== */
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding: .8rem 1rem;
-  background: rgba(17,24,39,.8);
-  border-bottom: 1px solid rgba(255,255,255,.06);
+  background: rgba(11, 15, 20, .65);
+  border-bottom: 1px solid rgba(156, 122, 59, .18);
   backdrop-filter: blur(8px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .25);
 }
-.brand { display: inline-flex; align-items: center; gap: .5rem; font-weight: 800; letter-spacing: .3px; }
-.brand .material-icons { color: var(--brand); }
-.nav-links { list-style: none; display: flex; gap: .7rem; margin: 0; padding: 0; }
-.nav-links a {
+
+/* brand */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+.brand-crest {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(140% 140% at 50% 0%, var(--brass-2) 0%, var(--brass) 55%, var(--brass-3) 100%);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .12) inset, 0 2px 8px rgba(0, 0, 0, .4);
+}
+
+.brand-text {
+  font-family: "Cinzel", "Times New Roman", serif;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .4);
+  white-space: nowrap;
+}
+
+/* links */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.nav-link {
   color: var(--text);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   padding: .55rem .75rem;
-  border-radius: 10px;
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   gap: .35rem;
+  border: 1px solid transparent;
+  transition: transform .08s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
 }
-.nav-links a:hover { background: rgba(255,255,255,.06); }
-.nav-links a.active { background: linear-gradient(90deg, rgba(34,211,238,.15), rgba(167,139,250,.15)); border: 1px solid rgba(255,255,255,.08); }
 
-.page-wrap { max-width: 960px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+.nav-link:hover {
+  background: rgba(255, 255, 255, .04);
+  border-color: rgba(156, 122, 59, .18);
+  box-shadow: 0 0 0 2px rgba(156, 122, 59, .14) inset;
+}
+
+.nav-link--active {
+  background: linear-gradient(90deg, rgba(156, 122, 59, .16), rgba(180, 147, 77, .14));
+  border: 1px solid rgba(156, 122, 59, .32);
+  box-shadow: 0 0 0 2px rgba(156, 122, 59, .18) inset, 0 8px 18px rgba(0, 0, 0, .25);
+}
+
+/* outline gold button (Logout) */
+.btn-gold-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(156, 122, 59, .55);
+  border-radius: 999px;
+  padding: .55rem .9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .08s ease, filter .18s ease, box-shadow .18s ease;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .06) inset;
+}
+
+.btn-gold-outline:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 0 0 2px rgba(156, 122, 59, .2) inset, 0 8px 18px rgba(0, 0, 0, .25);
+}
+
+.btn-gold-outline:active {
+  transform: translateY(1px);
+}
+
+/* ===============================
+   Landing / Sign-in (kept from your last step)
+   =============================== */
+body.curtain-mode {
+  background-image:
+    linear-gradient(180deg, rgba(5, 6, 8, .35), rgba(5, 6, 8, .55)),
+    url("./assets/victorianprojector.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: var(--text);
+}
+
+.landing-hero {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: clamp(20px, 5vw, 48px);
+}
+
+.landing-head {
+  /* Push the title away from the projector focal area */
+  width: 100%;
+  text-align: right;
+  margin-top: clamp(24px, 6vh, 80px);
+  margin-bottom: clamp(16px, 4vh, 32px);
+  margin-right: clamp(16px, 7vw, 140px);
+}
+
+.brandmark {
+  /* Use Macondo for the landing brand title */
+  font-family: "Macondo", "Macondo Swash Caps", serif;
+  font-size: clamp(34px, 4.6vw, 60px);
+  letter-spacing: .04em;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .35), 0 18px 40px rgba(0, 0, 0, .45);
+}
+
+.tagline {
+  margin-top: .4rem;
+  color: var(--muted);
+  font-size: clamp(14px, 1.5vw, 18px);
+  /* Match the title font as requested */
+  font-family: "Cinzel Decorative", "Cinzel", serif;
+}
+
+.signin-wrap {
+  width: 100%;
+  display: flex;
+  /* Move card to the right on wide screens so the projector is visible */
+  justify-content: flex-end;
+  padding-right: clamp(16px, 7vw, 140px);
+}
+
+@media (max-width: 900px) {
+  .signin-wrap {
+    justify-content: center;
+    padding-right: 0;
+  }
+  .landing-head { text-align: center; margin-right: 0; }
+}
+
+.signin-card {
+  /* Make the card smaller to reveal more background */
+  width: min(520px, 90vw);
+  background: linear-gradient(180deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .3)), var(--glass);
+  border-radius: 22px;
+  padding: clamp(18px, 3vw, 28px);
+  border: 1px solid rgba(156, 122, 59, .35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .04) inset;
+  backdrop-filter: blur(8px);
+}
+
+.field {
+  display: block;
+  margin-bottom: clamp(14px, 2.4vw, 22px);
+}
+
+.field-label {
+  display: block;
+  color: var(--muted);
+  font-size: .95rem;
+  margin: 0 0 .35rem 2px;
+  letter-spacing: .15px;
+  /* Make CurtainLogin labels use Cinzel Decorative */
+  font-family: "Cinzel Decorative", "Cinzel", serif;
+}
+
+.field-input {
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: #e9e9ee;
+  background: #0b0f14;
+  border-radius: 14px;
+  /* Default outline matches the brass button */
+  border: 1px solid rgba(156, 122, 59, .55);
+  padding: 14px 16px;
+  outline: none;
+  transition: box-shadow .2s ease, border-color .2s ease, background .2s ease;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 6px 18px rgba(0, 0, 0, .35);
+}
+
+.field-input::placeholder {
+  color: #cfd1d8;
+  opacity: .8;
+}
+
+.field-input:focus {
+  /* Focus changes to magenta like the original */
+  border-color: rgba(214, 128, 183, .75);
+  box-shadow: var(--ring), 0 10px 26px rgba(0, 0, 0, .45);
+  background: #0e1218;
+}
+
+/* Brass pill button used on Landing */
+.btn-gold {
+  width: max(140px, 32%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Remove extra top margin so buttons align level */
+  margin-top: 0;
+  padding: 12px 18px;
+  border-radius: 999px;
+  /* Ensure button border matches input default outline */
+  border: 1px solid rgba(156, 122, 59, .55);
+  background: radial-gradient(140% 140% at 50% 0%, var(--brass-2) 0%, var(--brass) 55%, var(--brass-3) 100%);
+  color: #1a1207;
+  font-weight: 700;
+  font-family: "Cinzel Decorative", "Cinzel", serif;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .06) inset;
+}
+
+.btn-gold:hover {
+  filter: brightness(1.04);
+  transform: translateY(-1px);
+}
+
+.btn-gold:active {
+  transform: translateY(0);
+}
+
+/* Teal pill button (for Register CTA) */
+.btn-teal {
+  width: max(160px, 36%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(46, 134, 167, .55); /* var(--teal) */
+  background: radial-gradient(140% 140% at 50% 0%, var(--teal) 0%, var(--deep-blue) 90%);
+  color: #0b1218;
+  font-weight: 700;
+  font-family: "Cinzel Decorative", "Cinzel", serif;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .06) inset;
+}
+
+.btn-teal:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.btn-teal:active { transform: translateY(0); }
+
+/* (Optional) page container styles you may reuse */
+.page-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
 .page {
-  background: rgba(31,41,55,.6);
-  border: 1px solid rgba(255,255,255,.06);
+  background: rgba(16, 20, 25, .6);
+  border: 1px solid rgba(156, 122, 59, .18);
   border-radius: 18px;
   padding: 1.25rem;
-  box-shadow: 0 10px 25px rgba(0,0,0,.25);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
 }
-.title { display: flex; align-items: center; gap: .6rem; margin: 0 0 1rem; font-size: 1.5rem; }
-.title-icon { color: var(--brand); }
-
-.form { display: flex; gap: .6rem; margin-bottom: .9rem; }
-.input {
-  flex: 1; padding: .7rem .9rem; border-radius: 12px; border: 1px solid rgba(255,255,255,.1);
-  background: #0b1222; color: var(--text);
-}
-.input::placeholder { color: var(--muted); }
-.btn {
-  border: none; border-radius: 12px; padding: .7rem .9rem; font-weight: 700; cursor: pointer;
-  display: inline-flex; align-items: center; gap: .35rem;
-  background: linear-gradient(90deg, var(--brand), var(--brand2)); color: #081118;
-}
-.btn:active { transform: translateY(1px); }
-
-.toolbar { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin: .5rem 0 1rem; flex-wrap: wrap; }
-.filters { display: flex; gap: .4rem; }
-.chip {
-  background: rgba(255,255,255,.05);
-  color: var(--text);
-  border: 1px solid rgba(255,255,255,.08);
-  padding: .35rem .6rem;
-  border-radius: 999px;
-  display: inline-flex; align-items: center; gap: .25rem;
-  cursor: pointer; font-weight: 600;
-}
-.chip:hover { background: rgba(255,255,255,.08); }
-.chip-active { background: linear-gradient(90deg, rgba(34,211,238,.18), rgba(167,139,250,.18)); }
-.chip-icon { font-size: 18px; }
-
-.meta { display: inline-flex; align-items: center; gap: .6rem; }
-.link { background: none; border: none; color: var(--text); cursor: pointer; font-weight: 600; }
-.link.danger { color: #fca5a5; }
-
-.list { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
-.card {
-  background: var(--card);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: 14px;
-  padding: .6rem .7rem;
-}
-.row { display: grid; grid-template-columns: auto 1fr; gap: .75rem; align-items: center; }
-
-.checkbox { position: relative; display: inline-flex; align-items: center; }
-.checkbox input { appearance: none; width: 22px; height: 22px; border-radius: 6px; border: 2px solid rgba(255,255,255,.2); }
-.checkbox input:checked { background: linear-gradient(90deg, var(--brand), var(--brand2)); border-color: transparent; }
-.checkbox .checkmark { position: absolute; pointer-events: none; left: 3px; top: 3px; font-size: 16px; }
-.checkbox input:checked + .checkmark::after { content: "✓"; }
-
-.title-wrap { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
-.item-title { font-weight: 600; }
-.item-title.done { color: var(--muted); text-decoration: line-through; }
-
-.actions { display: inline-flex; gap: .25rem; }
-.icon-btn {
-  border: none; background: rgba(255,255,255,.06); color: var(--text); border-radius: 10px; cursor: pointer;
-  display: inline-flex; align-items: center; justify-content: center; padding: .35rem;
-}
-.icon-btn:hover { background: rgba(255,255,255,.1); }
-
-.edit-form { display: flex; gap: .45rem; align-items: center; }
-
-.hint { color: var(--muted); margin-top: .75rem; }
-.muted { color: var(--muted); }
-
-.footer { text-align: center; color: var(--muted); padding: 1rem; font-size: .9rem; }
