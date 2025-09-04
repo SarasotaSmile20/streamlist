@@ -20,7 +20,8 @@ export async function searchMovies(query, page = 1) {
 export async function getMovie(id) {
   if (!API_KEY) throw new Error("Missing REACT_APP_TMDB_API_KEY");
   const { data } = await client.get(`/movie/${id}`, {
-    params: { append_to_response: "credits,videos" },
+    // include extra metadata we can surface (IMDb id, ratings, etc.)
+    params: { append_to_response: "credits,videos,external_ids,release_dates" },
   });
   return data;
 }

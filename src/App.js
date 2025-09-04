@@ -12,9 +12,8 @@ import Register from "@features/auth/Register";
 // Top-level pages
 import StreamList from "@features/lists/StreamList";
 import Movies from "./Components/Movies";
-import MovieDetail from "./Components/MovieDetail";
+import MovieDetail from "./pages/MovieDetail";
 import TVTrailer from "@features/video/TVTrailer";
-import Watchlist from "@features/lists/Watchlist";
 import Cart from "./Components/Cart";
 import About from "./Components/About";
 
@@ -40,7 +39,7 @@ export default function App() {
           <Route path="/movies" element={<Movies />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
           <Route path="/trailer/:id" element={<TVTrailer />} />
-          <Route path="/watchlist" element={<Watchlist />} />
+          {/** Watchlist removed */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/about" element={<About />} />
         </Route>

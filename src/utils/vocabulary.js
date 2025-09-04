@@ -12,14 +12,17 @@ const VOCAB = {
 
   // Actions / navigation
   addToList: "Add to Cabinet",
-  favorites: "Wax-Sealed",
+  favorites: "Treasured Films",
   // Verb/action for favorites button
-  markFavorite: "Mark with Wax Seal",
+  markFavorite: "Add to Treasures",
   details: "Open Dossier",
+  // Used for the search button text in Movies page
   search: "Summon Films",
+  // Used for navbar movies/gazette label
+  navGazette: "Gazette",
   share: "Stamp & Send",
-  checklist: "Ledger",
-  tasks: "Ledger",
+  checklist: "Cabinet",
+  tasks: "Cabinet",
   cart: "Satchel",
   about: "About the Guild",
 };

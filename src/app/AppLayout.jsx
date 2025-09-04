@@ -2,6 +2,7 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import { Scene } from "@ui/Scene";
+import GearBurst from "../Components/GearBurst";
 
 /**
  * Shared layout for all post-login routes.
@@ -16,6 +17,7 @@ export default function AppLayout() {
       <Scene size="lg" className="app-bg-colors">
         {/* Each page (StreamList, Movies, etc.) wraps content in .container-1120 */}
         <Outlet />
+        <GearBurst />
       </Scene>
     </>
   );

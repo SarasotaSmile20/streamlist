@@ -42,10 +42,11 @@ export default function GearBurst() {
         setTimeout(() => banner.remove(), 650);
       }
 
-      // Spawn gears
+      // Spawn gears (material-icons instead of FontAwesome)
       for (let i = 0; i < count; i++) {
-        const el = document.createElement("i");
-        el.className = "fa-solid fa-gear gearburst__gear";
+        const el = document.createElement("span");
+        el.className = "material-icons gearburst__gear";
+        el.textContent = "settings";
         el.style.left = `${x}px`;
         el.style.top = `${y}px`;
         const angle = ((i / count) * spread - spread / 2) * (Math.PI / 180);

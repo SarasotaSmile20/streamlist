@@ -8,7 +8,7 @@ import { logEvent } from "../utils/eventLogger";
 // steampunk components
 import TVTrailer from "@features/video/TVTrailer";
 import AddToFavoritesButton from "@features/lists/AddToFavoritesButton";
-import AddToWatchlistButton from "@features/lists/AddToWatchlistButton";
+// Removed watchlist button usage
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -96,7 +96,7 @@ export default function MovieDetail() {
     <section className="page">
       <div className="toolbar" style={{ marginBottom: 8 }}>
         <Link to="/movies" className="btn">← Back to Summons</Link>
-        <Link to="/watchlist" className="btn">Open Cabinet</Link>
+        {/* Removed watchlist link */}
       </div>
 
       {/* Dossier */}
@@ -123,20 +123,7 @@ export default function MovieDetail() {
           {movie.tagline ? <p className="muted" style={{ fontStyle: "italic" }}>{movie.tagline}</p> : null}
           <p>{movie.overview || "No overview available."}</p>
 
-          {/* Actions */}
-          <div className="btn-row" style={{ gap: 8 }}>
-            <AddToFavoritesButton
-              movie={movie}
-              onAdd={toggleFavorite}
-              message={isFav ? "Removed from Wax-Sealed" : "Added to Wax-Sealed"}
-            />
-            <AddToWatchlistButton
-              movie={movie}
-              onAdd={addToStreamList}
-              className="btn"
-              message="Added to Cabinet"
-            />
-          </div>
+          {/* Removed action buttons under poster */}
         </div>
       </div>
 

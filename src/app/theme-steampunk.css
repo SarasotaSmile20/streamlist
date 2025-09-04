@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cormorant+Garamond:wght@400;600;700&family=Special+Elite&display=swap');
+
 /* =========================================================
    Steampunk / Victorian Theme — App-wide styling
    ========================================================= */
@@ -29,17 +31,34 @@
 /* -----------------------------------------
    Background (post-login) — gradient + gears
    ----------------------------------------- */
+/*
+  Parchment background (tea‑stained paper)
+  - Uses layered radial stains and a subtle paper fiber pattern
+  - Replaces the previous neon gradient for a lighter steampunk document look
+*/
 .app-bg-colors {
+  /* base parchment tone */
+  --parchment: #f3ead6;
+  --parchment-2: #efe2ca;
+  --parchment-shadow: #cfb893;
+  --ink: #2a2a2c;
+
   background:
-    radial-gradient(1200px 600px at 20% 28%, rgba(237, 239, 243, 0.06), transparent 60%),
-    radial-gradient(900px 500px at 82% 34%, rgba(162, 74, 116, 0.25), transparent 65%),
-    radial-gradient(900px 520px at 15% 70%, rgba(30, 106, 140, 0.22), transparent 65%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.78)),
-    linear-gradient(135deg, var(--deep-blue) 0%, var(--purple) 55%, var(--magenta) 100%);
+    /* vignette + corner staining */
+    radial-gradient(1100px 700px at 0% 0%, rgba(147, 108, 59, 0.12), transparent 60%),
+    radial-gradient(1100px 700px at 100% 0%, rgba(147, 108, 59, 0.10), transparent 60%),
+    radial-gradient(1000px 600px at 0% 100%, rgba(147, 108, 59, 0.10), transparent 60%),
+    radial-gradient(1000px 600px at 100% 100%, rgba(147, 108, 59, 0.12), transparent 60%),
+    /* center brightening */
+    radial-gradient(1400px 800px at 50% 40%, rgba(255,255,255,.45), transparent 65%),
+    /* subtle fiber/noise */
+    repeating-linear-gradient(0deg, rgba(0,0,0,.015) 0 2px, transparent 2px 4px),
+    linear-gradient(180deg, var(--parchment), var(--parchment-2));
   background-attachment: fixed;
   min-height: 100%;
   position: relative;
   isolation: isolate;
+  color: var(--ink);
 }
 
 /* Subtle film grain */
@@ -108,6 +127,40 @@
   }
 }
 
+/* -----------------------------------------
+   GearBurst overlay (click effects)
+   ----------------------------------------- */
+.gearburst {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+.gearburst__gear {
+  position: absolute;
+  color: var(--gold);
+  text-shadow: 0 4px 12px rgba(0,0,0,.35);
+  font-size: 22px;
+  will-change: transform, opacity;
+}
+
+/* Vehicle sprite and steam puffs */
+.vehicle-sprite { mix-blend-mode: screen; filter: drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+.steam-puff {
+  position: fixed;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255,255,255,.8), rgba(255,255,255,.0));
+  pointer-events: none;
+  z-index: 2147483646;
+  animation: steam-puff-up 1400ms ease-out forwards;
+}
+@keyframes steam-puff-up {
+  0% { transform: translate(0, 0) scale(.6); opacity: .7; }
+  80% { opacity: .4; }
+  100% { transform: translate(-24px, -28px) scale(1.4); opacity: 0; }
+}
+
 @media (max-width: 768px) {
 
   .app-bg-colors::after,
@@ -132,10 +185,69 @@
   z-index: 1;
 }
 
-/* Page wrapper spacing */
-.page {
-  padding: 28px 16px 48px;
+/* -------------------------------
+   Ledger (StreamList) — old bg
+   ------------------------------- */
+/* Bring back the original deep blue → purple gradient on this page only. */
+.ledger-page { position: relative; }
+.ledger-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* behind page content, above Scene parchment */
+  background:
+    radial-gradient(1200px 600px at 20% 28%, rgba(237, 239, 243, 0.06), transparent 60%),
+    radial-gradient(900px 500px at 82% 34%, rgba(162, 74, 116, 0.25), transparent 65%),
+    radial-gradient(900px 520px at 15% 70%, rgba(30, 106, 140, 0.22), transparent 65%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.78)),
+    linear-gradient(135deg, var(--deep-blue) 0%, var(--purple) 55%, var(--magenta) 100%);
 }
+
+/* Floating gears to match the previous look */
+.ledger-page::after {
+  content: "";
+  position: fixed;
+  top: 28vh;
+  right: max(8px, calc((100vw - 1120px) / 2 - 180px));
+  width: 180px;
+  height: 380px;
+  background: url("../assets/gears.gif") no-repeat center / contain;
+  opacity: .22;
+  filter: sepia(.35) saturate(1.05) contrast(1.05);
+  pointer-events: none;
+  z-index: 0;
+  animation: gears-float 14s ease-in-out infinite alternate;
+}
+
+.ledger-page .container-1120::before {
+  content: "";
+  position: fixed;
+  top: 28vh;
+  left: max(8px, calc((100vw - 1120px) / 2 - 180px));
+  width: 180px;
+  height: 380px;
+  background: url("../assets/gears.gif") no-repeat center / contain;
+  opacity: .22;
+  filter: sepia(.35) saturate(1.05) contrast(1.05);
+  pointer-events: none;
+  z-index: 0;
+  animation: gears-float 14s ease-in-out infinite alternate-reverse;
+}
+
+@media (max-width: 1024px) {
+  .ledger-page::after,
+  .ledger-page .container-1120::before {
+    opacity: .16; width: 140px; height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ledger-page::after,
+  .ledger-page .container-1120::before { display: none; }
+}
+
+/* Page wrapper spacing */
+.page { padding: 20px 14px 36px; }
 
 /* Title */
 .title {
@@ -167,53 +279,56 @@
 }
 
 /* Panel “glass” vibe */
+/* Switch glass panels to parchment cards */
 .panel,
 .form,
 .toolbar,
 .list {
-  background: rgba(13, 17, 26, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) inset, 0 6px 20px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(6px);
+  background:
+    radial-gradient(120% 120% at 20% 10%, rgba(207, 184, 147, .18), transparent 60%),
+    rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(121, 85, 58, 0.28);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12), 0 1px 0 rgba(255, 255, 255, .7) inset;
+  backdrop-filter: none;
 }
 
 /* Inputs */
+/* Inputs on paper */
 .input {
   appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(12, 16, 24, 0.65);
-  color: var(--soft-white);
+  border: 1px solid rgba(121, 85, 58, 0.35);
+  background: #fbf6e9;
+  color: #2a2a2c;
   padding: 10px 12px;
-  border-radius: 14px;
+  border-radius: 12px;
   outline: none;
   transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
 
-.input::placeholder {
-  color: rgba(237, 239, 243, .55);
-}
+.input::placeholder { color: rgba(58, 45, 30, .55); }
 
 .input:focus {
-  border-color: var(--magenta);
-  box-shadow: 0 0 0 3px rgba(162, 74, 116, .25);
-  background: rgba(12, 16, 24, .8);
+  border-color: rgba(193, 154, 58, .75);
+  box-shadow: 0 0 0 3px rgba(193, 154, 58, .25);
+  background: #fff9e9;
 }
 
 /* Buttons — themed with deep-blue → purple */
+/* Buttons — brass on parchment, tighter spacing */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--soft-white);
-  background: linear-gradient(180deg, var(--deep-blue), var(--purple));
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 10px 14px;
-  font-weight: 600;
+  color: #2f2616;
+  background: linear-gradient(180deg, #e0c27a, #c69a43);
+  border: 1px solid rgba(121, 85, 58, 0.45);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .12);
-  transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, .12), inset 0 1px 0 rgba(255, 255, 255, .4);
+  transition: transform .1s ease, filter .12s ease, box-shadow .12s ease;
 }
 
 /* Small wax seal accent for Favorite button */
@@ -227,65 +342,64 @@
   box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 1px 2px rgba(0,0,0,.35);
 }
 
-.btn:hover {
-  filter: brightness(1.06);
-  transform: translateY(-1px);
-}
+.btn:hover { filter: brightness(1.04); transform: translateY(-1px); }
 
-.btn:active {
-  transform: translateY(0);
-}
+.btn:active { transform: translateY(0); }
 
 /* Wax accent variant for Favorite */
+/* Wax variant keeps its rich color for contrast */
 .btn-wax {
   color: #fff;
   background: linear-gradient(180deg, var(--magenta), var(--purple));
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(90, 45, 60, 0.35);
 }
 
-.btn-small {
-  padding: 8px 10px;
-  border-radius: 12px;
-  font-size: .95rem;
-}
+.btn-small { padding: 6px 10px; border-radius: 9px; font-size: .95rem; }
 
 /* Link-like button */
 .btn-ghost {
   background: transparent;
-  color: var(--soft-white);
-  border: 1px solid rgba(255, 255, 255, .18);
-  border-radius: 14px;
-  padding: 10px 14px;
+  color: #2a2a2c;
+  border: 1px solid rgba(121, 85, 58, .35);
+  border-radius: 10px;
+  padding: 8px 12px;
 }
 
-.btn-ghost:hover {
-  background: rgba(255, 255, 255, .06);
+.btn-ghost:hover { background: rgba(92, 64, 44, .06); }
+
+/* Naked icon+label control (no bg/border) */
+.btn-clean {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: #2a2a2c;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
+.btn-clean:hover { filter: brightness(1.05); }
 
 /* Chips */
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--soft-white);
-  background: rgba(17, 23, 35, .7);
-  border: 1px solid rgba(255, 255, 255, .08);
+  color: #2a2a2c;
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid rgba(121, 85, 58, .28);
   border-radius: 999px;
-  padding: 10px 16px;
+  padding: 8px 12px;
   cursor: pointer;
   transition: background .15s ease, border-color .15s ease, transform .12s ease;
 }
 
-.chip:hover {
-  background: rgba(17, 23, 35, .85);
-  transform: translateY(-1px);
-}
+.chip:hover { background: rgba(255, 255, 255, .85); transform: translateY(-1px); }
 
 .chip-active {
-  background: radial-gradient(120% 120% at 20% 40%, rgba(162, 74, 116, .35), transparent 60%),
-    rgba(17, 23, 35, .92);
-  border-color: rgba(162, 74, 116, .55);
-  box-shadow: 0 0 0 2px rgba(162, 74, 116, .25);
+  background: radial-gradient(120% 120% at 20% 40%, rgba(193, 154, 58, .25), transparent 60%), rgba(255,255,255,.92);
+  border-color: rgba(193, 154, 58, .55);
+  box-shadow: 0 0 0 2px rgba(193, 154, 58, .22);
 }
 
 .chip-icon {
@@ -294,13 +408,54 @@
 }
 
 /* Toolbar */
-.toolbar {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  gap: 12px 16px;
-  padding: 12px;
-  margin: 16px 0;
+.toolbar { display: grid; grid-template-columns: auto auto 1fr; gap: 8px 12px; padding: 10px; margin: 10px 0; }
+
+/* StreamList alignment: center the fields and reduce gaps */
+.form-streamlist {
+  max-width: 960px;
+  margin: 0 auto 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* center the input group */
+  align-items: center;
+  gap: 6px;
 }
+
+/* Specific widths for the add row so the group can center nicely */
+.form-streamlist .add-title { width: clamp(300px, 48vw, 460px); }
+.form-streamlist select.input { width: 180px; }
+.form-streamlist .custom-genre { width: 220px; }
+
+@media (max-width: 900px) {
+  .form-streamlist {
+    justify-content: stretch;
+  }
+  .form-streamlist .add-title,
+  .form-streamlist select.input,
+  .form-streamlist .custom-genre {
+    width: 100%;
+  }
+  .row-streamlist .actions-right {
+    position: static;
+    transform: none;
+    justify-content: center;
+    margin-top: 6px;
+  }
+}
+
+.toolbar-streamlist {
+  max-width: 960px;
+  margin: 10px auto 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 10px;
+}
+
+/* Tighter chip spacing just on StreamList */
+.toolbar-streamlist .filters { gap: 6px; }
+.toolbar-streamlist .chip { padding: 6px 10px; }
 
 .filters {
   display: flex;
@@ -313,77 +468,139 @@
   gap: 10px;
 }
 
-.muted {
-  color: rgba(237, 239, 243, .68);
-  font-size: .95rem;
-}
+.muted { color: rgba(44, 35, 25, .75); font-size: .95rem; }
 
 /* Add form layout */
-.form {
-  display: grid;
-  grid-template-columns: 2fr 1fr auto auto;
-  gap: 10px;
-  padding: 12px;
-  margin: 12px 0 8px;
+.form { display: grid; grid-template-columns: 2fr 1fr auto auto; gap: 8px; padding: 10px; margin: 8px 0 6px; }
+
+/* Override: StreamList add row should center the group */
+.form.form-streamlist {
+  display: flex;
+  grid-template-columns: none;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
+
+/* Row wrapper to place actions at right while keeping form group centered */
+.row-streamlist { position: relative; max-width: 960px; margin: 0 auto 8px; }
+.row-streamlist .actions-right { position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: flex; gap: 8px; }
+
+/* Bottom duplicate actions aligned to the right edge */
+.row-actions-bottom { max-width: 960px; margin: 8px auto 0; display: flex; justify-content: flex-start; gap: 8px; }
 
 @media (max-width: 900px) {
   .form {
-    grid-template-columns: 1fr;
+  grid-template-columns: 1fr;
   }
 }
 
-/* List */
-.list {
-  list-style: none;
-  margin: 16px 0 0;
-  padding: 10px 12px;
+/* Movies search row styled like StreamList */
+.form-movies { max-width: 960px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.form-movies .search-input { width: clamp(320px, 52vw, 520px); }
+.row-movies { position: relative; max-width: 960px; margin: 0 auto 12px; }
+.row-movies .clear-right { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
+
+@media (max-width: 900px) {
+  .form-movies .search-input { width: 100%; }
+  .row-movies .clear-right { position: static; transform: none; text-align: center; margin-top: 6px; }
 }
+
+/* List */
+.list { list-style: none; margin: 12px 0 0; padding: 8px 10px; }
+
+/* Align StreamList rows with centered input group */
+.ledger-page .list { max-width: 960px; margin-left: auto; margin-right: auto; margin-top: 16px; }
 
 .list li {
-  background: rgba(12, 16, 24, .6);
-  border: 1px solid rgba(255, 255, 255, .06);
-  border-radius: 14px;
-  padding: 14px 12px;
-  margin: 10px 0;
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid rgba(121, 85, 58, .25);
+  border-radius: 12px;
+  padding: 10px 10px;
+  margin: 8px 0;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 10px;
+  gap: 8px;
 }
 
-/* Movie results layout */
+/* Movie results layout — grid of posters matching search width */
+.movie-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(154px, 1fr)); gap: 12px; padding: 12px; }
+.movie-results .movie-result { background: transparent; border: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr; gap: 6px; justify-items: center; }
+.movie-results .movie-result:hover { transform: translateY(-1px); }
+
+/* Selectable tiles */
 .movie-results .movie-result {
-  align-items: center;
+  position: relative;
+}
+.movie-result--selected .poster-thumb { box-shadow: 0 0 0 3px rgba(46,134,167,.65), 0 6px 14px rgba(0,0,0,.18); }
+.select-toggle { position: absolute; top: 6px; left: 6px; z-index: 2; display: inline-grid; place-items: center; }
+.select-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.select-box {
+  width: 18px; height: 18px; border-radius: 4px;
+  background: rgba(255,255,255,.85);
+  border: 1px solid rgba(121,85,58,.35);
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.select-toggle input:checked + .select-box {
+  background: linear-gradient(180deg, #2e86a7, #3b2f57);
+  border-color: rgba(46,134,167,.85);
+  box-shadow: 0 0 0 2px rgba(46,134,167,.35) inset, 0 1px 2px rgba(0,0,0,.25);
 }
 
-.movie-results .movie-result:hover {
-  border-color: rgba(255, 255, 255, .12);
-  transform: translateY(-1px);
-  transition: transform .12s ease, border-color .12s ease;
-}
+/* Shimmering GIF icons for batch buttons */
+.shimmer-icon { filter: drop-shadow(0 0 6px rgba(255,255,255,.35)); animation: shimmer 2.4s ease-in-out infinite; }
+@keyframes shimmer { 0%, 100% { filter: drop-shadow(0 0 4px rgba(255,255,255,.25)) brightness(1); } 50% { filter: drop-shadow(0 0 10px rgba(193,154,58,.6)) brightness(1.15) contrast(1.05); } }
 
-.poster-thumb {
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .12);
-  background: #0b1222;
-}
+/* Poster: no background; fixed tile width; keep slight shadow */
+.poster-thumb { border-radius: 10px; box-shadow: 0 6px 14px rgba(0, 0, 0, .18); background: transparent; width: 154px; height: auto; display: block; }
+
+/* Readability: base text light on dark ledger bg; override to dark on light cards below */
+.ledger-page { font-size: 1.06rem; color: rgba(237,239,243,.92); }
+.ledger-page .muted { color: rgba(237,239,243,.78); }
+.ledger-page .title,
+.ledger-page .section-title { color: var(--soft-white); }
+.ledger-page .container-1120 { padding: 4px 8px; }
+
+/* Tile caption */
+.movie-caption { text-align: center; max-width: 154px; }
+.movie-title { font-weight: 600; font-size: .98rem; }
+/* Result tile action buttons (hat/clock) */
+.tile-actions { display: flex; gap: 12px; justify-content: center; margin-top: 4px; }
+.tile-iconbtn { background: transparent; border: 0; padding: 2px; color: inherit; cursor: pointer; display: grid; justify-items: center; gap: 4px; }
+.tile-iconbtn img { width: 28px; height: 28px; object-fit: contain; filter: contrast(1.05) sepia(.12) saturate(1.1); }
+.tile-iconbtn span { font-size: .8rem; color: rgba(44, 35, 25, .78); font-weight: 600; }
+.tile-iconbtn:active { transform: translateY(1px); }
 
 /* Compact button row on detail page (no panel background) */
-.btn-row {
-  display: flex;
-  gap: 8px;
-  margin: 4px 0 0;
-}
+.btn-row { display: flex; gap: 6px; margin: 2px 0 0; flex-wrap: wrap; }
 
 /* Keep TV near poster size */
 .tv-holder-compact {
   display: flex;
   justify-content: center;
+  overflow: visible; /* allow scaled TV to extend within its column */
 }
 .tv-holder-compact .tv-frame {
   width: 100%;
-  max-width: 240px; /* close to poster width */
+  max-width: 400px; /* expanded to accommodate slightly larger TV */
 }
+
+/* Wide TV holder for detail page */
+.trailer-cast-row { display: grid; grid-template-columns: minmax(420px, 640px) 1fr; gap: 16px; align-items: start; margin-top: 8px; }
+.tv-holder-wide { display: block; }
+.tv-holder-wide .tv-frame { width: 100%; max-width: 460px; margin: 0; }
+@media (max-width: 900px) {
+  .trailer-cast-row { grid-template-columns: 1fr; }
+  .tv-holder-wide .tv-frame { max-width: 100%; }
+}
+
+/* Loader GIF larger */
+.gears-loader { display: grid; place-items: center; }
+.gears-loader img { transform: scale(2); transform-origin: center; }
+
+/* Airship gif larger */
+.airship { transform: scale(2); transform-origin: center; }
 
 .list li .actions {
   display: flex;
@@ -408,10 +625,10 @@
 }
 
 .cast-card {
-  background: rgba(12, 16, 24, .6);
-  border: 1px solid rgba(255, 255, 255, .06);
-  border-radius: 12px;
-  padding: 12px;
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid rgba(121, 85, 58, .22);
+  border-radius: 10px;
+  padding: 10px;
   display: grid;
   gap: 4px;
   transition: transform .12s ease, border-color .12s ease;
@@ -428,9 +645,80 @@ select.input {
 }
 
 /* Empty state */
-.empty {
-  color: rgba(237, 239, 243, .8);
-  padding: 10px 4px;
+.empty { color: rgba(44, 35, 25, .75); padding: 10px 4px; }
+
+/* -----------------------------------------
+   Movies page: results + favorites sidebar
+   ----------------------------------------- */
+.movies-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 12px;
+  align-items: start;
+}
+
+.favorites-aside {
+  position: sticky;
+  top: 0; /* align with results grid top */
+  align-self: start;
+  padding: 10px;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 120% at 20% 10%, rgba(207, 184, 147, .18), transparent 60%),
+    rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(121, 85, 58, 0.28);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12), 0 1px 0 rgba(255, 255, 255, .7) inset;
+}
+
+/* Make Treasured header darker and larger */
+.favorites-aside .section-title {
+  color: rgba(44, 35, 25, .95);
+  font-size: 1.3rem;
+}
+.favorites-aside .section-title .fav-dino {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+/* Favorites column and toolbar */
+.favorites-col { display: grid; gap: 8px; align-content: start; align-self: start; }
+.favorites-toolbar { display: flex; align-items: center; gap: 8px; justify-content: flex-start; }
+
+.favorite-mini-list { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 8px; }
+.favorite-mini-item { display: block; }
+.favorite-mini-item { position: relative; }
+.favorite-mini-link { display: grid; grid-template-columns: 46px 1fr; gap: 8px; align-items: center; text-decoration: none; color: inherit; }
+.favorite-mini-thumb { width: 46px; height: 69px; object-fit: cover; border-radius: 6px; box-shadow: 0 3px 8px rgba(0,0,0,.16); background: rgba(0,0,0,.06); }
+.favorite-mini-thumb.placeholder { display: block; }
+.favorite-mini-title { font-size: .95rem; font-weight: 600; color: rgba(44,35,25,.9); }
+
+.favorite-mini-remove {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid rgba(121, 85, 58, .35);
+  background: rgba(255,255,255,.85);
+  color: #6b4226;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+}
+.favorite-mini-remove:hover { filter: brightness(1.02); transform: translateY(-1px); }
+
+@media (max-width: 980px) {
+  .movies-grid { grid-template-columns: 1fr; }
+  .favorites-aside { position: static; }
+}
+
+/* Drive-right fade animation for vehicle.gif */
+@keyframes drive-right-fade {
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(60vw) scale(1.05); opacity: 0.1; }
 }
 
 /* -----------------------------------------
@@ -495,23 +783,14 @@ body.curtain-mode {
    Text Colors — parchment, muted gray, dark iron
    ----------------------------------------- */
 :root {
-  /* Light parchment for primary text */
-  --text-parchment: #EADCC2;
-  /* Softer gray for muted/secondary text */
-  --text-muted-gray: #B8C0C8;
-  /* Dark iron for text on light backgrounds */
-  --text-iron: #2A2A2C;
+  /* Parchment text system */
+  --text-parchment: #2A2A2C;    /* primary body text now dark ink */
+  --text-muted-gray: #6b5a45;    /* muted ink */
+  --text-iron: #1f1b16;         /* highest contrast */
 }
 
-/* Default body text uses parchment */
-body {
-  color: var(--text-parchment);
-}
-
-/* Input placeholders: faded parchment */
-.input::placeholder {
-  color: rgba(234, 220, 194, 0.6);
-}
+/* Default body text uses dark ink on light paper */
+body { color: var(--text-parchment); }
 
 /* Helper text classes */
 .text-primary { color: var(--text-parchment) !important; }
@@ -526,16 +805,24 @@ body {
    TV Trailer — brass frame + status label
    ----------------------------------------- */
 .brass-frame {
-  border: 1px solid rgba(193, 154, 58, 0.65); /* var(--gold) toned */
-  border-radius: 14px;
-  padding: 8px;
+  border: 2px solid rgba(193, 154, 58, 0.75); /* stronger brass outline */
+  border-radius: 16px;
+  padding: 12px; /* more breathing room around enlarged TV */
   background:
-    radial-gradient(120% 120% at 20% 10%, rgba(156, 122, 59, .08), transparent 60%),
-    rgba(13, 17, 26, 0.45);
+    radial-gradient(120% 120% at 20% 10%, rgba(156, 122, 59, .10), transparent 60%),
+    rgba(13, 17, 26, 0.48);
 }
 
 .tv-frame {
   position: relative;
+  /* Allow the TV GIF to grow beyond its normal layout box */
+  overflow: visible;
+  /* Contain blend effects to this frame */
+  isolation: isolate;
+  /* Nudge the TV down so it doesn't overlap prior text */
+  margin-top: 20px; /* final: 20px down */
+  /* Extra space under the scaled TV so content below doesn't crowd it */
+  margin-bottom: 28px;
 }
 
 .tv-frame > img {
@@ -543,11 +830,20 @@ body {
   display: block;
   border-radius: 10px;
   opacity: .9;
+  /* Blend white pixels into the dark background to appear transparent */
+  mix-blend-mode: multiply;
+  /* Grow downward (not upward) when scaled */
+  transform-origin: 50% 0%;
+  /* Enlarge the TV GIF a bit more, screen unchanged */
+  transform: scale(1.6);
 }
 
 .tv-screen {
   position: absolute;
-  inset: 8% 6% 20% 6%; /* fits the gif's screen area */
+  /* Slightly smaller screen area so the video sits comfortably within the TV GIF */
+  inset: 14% 11% 28% 11%;
+  /* Nudge YouTube window: 11px left, 90px down (cumulative) */
+  transform: translate(-11px, 90px);
   background: #0b1222;
   border: 1px solid rgba(193, 154, 58, 0.6);
   border-radius: 12px;
@@ -581,3 +877,179 @@ body {
   background: linear-gradient(180deg, var(--teal), var(--deep-blue));
   box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 1px 2px rgba(0,0,0,.35);
 }
+
+/* === BEGIN: Movie Detail (Victorian Steampunk Playbill) === */
+/* Fonts
+   - Titles: Cinzel Decorative
+   - Body: Cormorant Garamond
+   - Buttons/Badges: Special Elite */
+
+.playbill-bg {
+  /* Damask wallpaper + vignette */
+  --damask: radial-gradient(1200px 800px at 50% -10%, rgba(0,0,0,.45), transparent 60%),
+             radial-gradient(1000px 700px at -10% 20%, rgba(156,122,59,.12), transparent 60%),
+             radial-gradient(1000px 700px at 110% 30%, rgba(162,74,116,.12), transparent 60%),
+             linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.85));
+  background:
+    var(--damask),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.02) 0 10px, rgba(0,0,0,.02) 10px 20px);
+  position: relative;
+  isolation: isolate;
+}
+
+/* Floating airship */
+@keyframes airship-drift {
+  0% { transform: translateX(-20vw) translateY(0) scale(.95); opacity: 0; }
+  10% { opacity: .32; }
+  50% { transform: translateX(40vw) translateY(-6px) scale(1.08); opacity: .42; }
+  90% { opacity: .32; }
+  100% { transform: translateX(90vw) translateY(0) scale(1.02); opacity: 0; }
+}
+
+.playbill-bg::after {
+  content: "";
+  position: absolute;
+  top: 6vh;
+  left: -20vw;
+  width: 640px;  /* doubled */
+  height: 320px; /* doubled */
+  background: url("../assets/airship.gif") center / contain no-repeat;
+  opacity: .3;
+  filter: sepia(.35) saturate(1.05) contrast(1.05);
+  pointer-events: none;
+  animation: airship-drift 40s linear infinite;
+}
+
+/* Header */
+.playbill-header { text-align: center; margin: 8px 0 16px; }
+.playbill-title-row { display: grid; grid-auto-flow: column; align-items: end; justify-content: center; gap: 12px; }
+.playbill-heading {
+  font-family: 'Cinzel Decorative', 'Cinzel', serif;
+  font-weight: 900;
+  font-size: clamp(28px, 5vw, 48px);
+  letter-spacing: .5px;
+  color: var(--soft-white);
+  margin: 0;
+}
+.playbill-subtitle {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(16px, 2.2vw, 20px);
+  color: rgba(237,239,243,.85);
+  margin: 8px 0 0 0;
+  font-style: italic;
+}
+.top-hat { font-size: clamp(20px, 3vw, 28px); opacity: .95; transform: translateY(4px); }
+.top-hat.left { transform: scaleX(-1) translateY(4px); }
+
+/* Ornate divider */
+.ornate-divider {
+  --g: rgba(193,154,58,.6);
+  height: 14px;
+  margin: 8px auto 0;
+  width: min(560px, 80%);
+  background: linear-gradient(90deg, transparent, var(--g) 20%, var(--g) 80%, transparent);
+  border-radius: 999px;
+  position: relative;
+}
+.ornate-divider::before,
+.ornate-divider::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(100% 100% at 30% 30%, rgba(255,255,255,.25), transparent 40%), linear-gradient(180deg, var(--gold), var(--brass));
+  box-shadow: 0 0 0 1px rgba(0,0,0,.35) inset, 0 1px 2px rgba(0,0,0,.35);
+}
+.ornate-divider::before { left: 6px; }
+.ornate-divider::after { right: 6px; }
+
+/* Grid */
+.playbill-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .playbill-grid { grid-template-columns: 1fr; }
+}
+
+/* Panels */
+.brass-panel {
+  background: radial-gradient(120% 120% at 20% 10%, rgba(156, 122, 59, .08), transparent 60%), rgba(13, 17, 26, 0.50);
+  border: 1px solid rgba(193, 154, 58, 0.45);
+  border-radius: 16px;
+  box-shadow: inset 0 12px 40px rgba(0, 0, 0, .35), 0 6px 20px rgba(0, 0, 0, .25);
+  padding: 12px;
+}
+
+.poster-panel { text-align: center; }
+.poster-large { width: 100%; max-width: 260px; display: inline-block; border-radius: 14px; background: #0b1222; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+
+/* Actions */
+.actions-row { display: flex; gap: 10px; justify-content: center; margin: 10px 0 4px; flex-wrap: wrap; }
+
+/* Realistic relic icon strip under poster (no text labels) */
+.relic-strip { display: flex; justify-content: center; gap: 10px; margin-top: 6px; }
+.relic { width: 42px; height: 42px; object-fit: contain; filter: contrast(1.05) sepia(.12) saturate(1.1); opacity: .9; }
+
+@keyframes relic-bob { from { transform: translateY(-2px); } to { transform: translateY(2px); } }
+@keyframes relic-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.relic-bob { animation: relic-bob 2.4s ease-in-out infinite alternate; }
+.relic-spin { animation: relic-spin 12s linear infinite; }
+.relic-float { animation: gears-float 8s ease-in-out infinite alternate; }
+
+/* Wax Seal button */
+.wax-button { font-family: 'Special Elite', system-ui, sans-serif; }
+.wax-seal-lg {
+  width: 16px; height: 16px; border-radius: 50%; display: inline-block; margin-right: 6px;
+  background:
+    radial-gradient(100% 100% at 30% 30%, rgba(255,255,255,.25), transparent 40%),
+    linear-gradient(180deg, var(--magenta), var(--purple));
+  box-shadow: 0 0 0 1px rgba(0,0,0,.25) inset, 0 1px 2px rgba(0,0,0,.35);
+}
+
+/* Chest button */
+.chest-button { position: relative; font-family: 'Special Elite', system-ui, sans-serif; }
+.chest { position: relative; width: 36px; height: 24px; display: inline-block; margin: 0 2px; }
+.chest-lid, .chest-base { position: absolute; left: 0; right: 0; border-radius: 4px; }
+.chest-lid { top: 0; height: 10px; background: linear-gradient(180deg, #7b5a3d, #3d2a1f); transform-origin: left bottom; transition: transform .2s ease; }
+.chest-base { bottom: 0; height: 16px; background: linear-gradient(180deg, #3d2a1f, #261a13); border: 1px solid rgba(0,0,0,.4); }
+.chest-heart { position: absolute; top: 2px; left: 50%; transform: translateX(-50%); width: 10px; height: 10px; background: radial-gradient(100% 100% at 30% 30%, rgba(255,255,255,.25), transparent 40%), linear-gradient(180deg, #d45, #842); border-radius: 50%; box-shadow: 0 0 0 1px rgba(0,0,0,.35) inset; }
+.chest-key { position: absolute; right: -14px; top: 6px; width: 12px; height: 12px; border-radius: 2px; background: linear-gradient(180deg, #c19a3a, #9c7a3b); transform: rotate(20deg); box-shadow: 0 0 0 1px rgba(0,0,0,.35) inset; }
+.chest-button:hover .chest-lid { transform: rotateX(25deg); }
+.chest-button:active .chest-lid { transform: rotateX(45deg); }
+
+/* Charms */
+.charms { list-style: none; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 8px 0 0; padding: 0; }
+.charm { font-family: 'Special Elite', system-ui, sans-serif; background: rgba(17,23,35,.7); border: 1px solid rgba(255,255,255,.08); color: var(--soft-white); border-radius: 999px; padding: 8px 12px; display: inline-flex; align-items: center; gap: 6px; }
+.charm-ico { font-size: 16px; opacity: .95; }
+
+/* Details */
+.details-panel { display: grid; gap: 10px; }
+.details-panel .meta-row { display: flex; gap: 12px; flex-wrap: wrap; color: rgba(237,239,243,.85); font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.1rem; }
+.details-panel .overview { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.2rem; line-height: 1.6; color: var(--soft-white); }
+.trailer .section-title { font-family: 'Cinzel Decorative', 'Cinzel', serif; }
+
+/* Typography defaults override for this page */
+.playbill-bg, .playbill-bg p, .playbill-bg span, .playbill-bg li { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+@media (prefers-reduced-motion: reduce) {
+  .playbill-bg::after { animation: none; opacity: .18; }
+}
+/* === END: Movie Detail (Victorian Steampunk Playbill) === */
+
+/* -----------------------------------------
+   Ledger text contrast (final overrides)
+   ----------------------------------------- */
+/* Ensure card/list content stays dark on light backgrounds */
+.ledger-page .list,
+.ledger-page .list * { color: rgba(44, 35, 25, .92); }
+.ledger-page .list .muted { color: rgba(44, 35, 25, .75); }
+.ledger-page .favorites-aside,
+.ledger-page .favorites-aside * { color: rgba(44, 35, 25, .92); }
+.ledger-page .favorite-mini-title { color: rgba(44, 35, 25, .92); }
+.ledger-page .favorite-mini-list .muted { color: rgba(44, 35, 25, .72); }

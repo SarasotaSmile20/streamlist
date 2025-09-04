@@ -1,6 +1,6 @@
 /* NavBar parchment styling and gear icon */
 
-.navbar {
+.navbar, header.navbar {
   /* Deep blue → purple with subtle magenta glow */
   background:
     radial-gradient(900px 520px at 82% 34%, rgba(162, 74, 116, 0.15), transparent 65%),
@@ -10,17 +10,17 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
 }
 
-/* Brand text in Macondo, dark iron color for readability */
+/* Typography: Use Macondo across the navbar (links + logout) */
 .brand, .brand-text { color: var(--soft-white); }
-
-.brand-text {
-  font-family: "Macondo", "Macondo Swash Caps", "Cinzel", serif;
+.navbar, .navbar .nav-link, .navbar .btn-gold-outline, .navbar .brand-text {
+  font-family: "Macondo", "Macondo Swash Caps", serif;
+  font-size: 1.2rem; /* increase navbar + logout button size */
 }
 
 /* Replace crest with a small gear icon */
 .brand-crest {
-  width: 18px;
-  height: 18px;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   color: var(--magenta);
@@ -29,12 +29,7 @@
   box-shadow: none;
 }
 
-.brand-crest .gear-icon {
-  width: 16px;
-  height: 16px;
-  animation: navbar-gear-spin 2.4s linear infinite;
-  transform-origin: 50% 50%;
-}
+.brand-crest .brand-heart { width: 44px; height: 44px; object-fit: contain; }
 
 @keyframes navbar-gear-spin {
   to { transform: rotate(360deg); }

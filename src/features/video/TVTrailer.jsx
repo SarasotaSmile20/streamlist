@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import "@app/theme-steampunk.css";
 import tv from "../../assets/tv.gif";
 
-export default function TVTrailer({ youtubeKey, videoSrc }) {
+export default function TVTrailer({ youtubeKey, videoSrc, showStatus = true }) {
   const [status, setStatus] = useState("Crank to Preview");
 
   const onVideoPlay = useCallback(() => setStatus("Now Exhibiting"), []);
@@ -11,7 +11,7 @@ export default function TVTrailer({ youtubeKey, videoSrc }) {
   const onIFrameBlur = useCallback(() => setStatus("Crank to Preview"), []);
 
   return (
-    <div className="tv-frame brass-frame" aria-label="Trailer player">
+    <div className="tv-frame" aria-label="Trailer player">
       <img src={tv} alt="Vintage TV" />
       <div className="tv-screen" role="group" aria-label="Video area">
         {youtubeKey ? (
@@ -37,9 +37,11 @@ export default function TVTrailer({ youtubeKey, videoSrc }) {
           </div>
         )}
       </div>
-      <div className="tv-status" role="status" aria-live="polite">
-        {status}
-      </div>
+      {showStatus && (
+        <div className="tv-status" role="status" aria-live="polite">
+          {status}
+        </div>
+      )}
     </div>
   );
 }

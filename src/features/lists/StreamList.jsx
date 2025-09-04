@@ -287,36 +287,21 @@ export default function StreamList() {
 
   /* ---------- Render ---------- */
   return (
-    <section className="page" onClick={onBackgroundClick}>
+    <section className="page ledger-page" onClick={onBackgroundClick}>
       <div className="container-1120">
-        {/* Title row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+        {/* Title left; actions move next to form */}
+        <div style={{ display: "grid", gap: 8, marginBottom: 12 }}>
           <h1 className="title font-cinzelDecorative text-primary title-engrave" style={{ margin: 0 }}>
             <span className="material-icons title-icon">playlist_add_check</span>
             StreamList
           </h1>
-          <div style={{ display: "flex", gap: 8 }}>
-            <ExportMenu
-              onCSV={() => exportCSV()}
-              onJSON={() => exportJSON()}
-              show={showExportMenu}
-              setShow={setShowExportMenu}
-              hideOther={() => setShowImportMenu(false)}
-            />
-            <ImportMenu
-              onCSV={() => onChooseImportCSV()}
-              onJSON={() => onChooseImportJSON()}
-              show={showImportMenu}
-              setShow={setShowImportMenu}
-              hideOther={() => setShowExportMenu(false)}
-            />
-          </div>
         </div>
 
-        {/* Add form */}
-        <form className="form" onSubmit={submit}>
+        {/* Add form with actions on the right */}
+        <div className="row-streamlist">
+        <form className="form form-streamlist" onSubmit={submit}>
           <input
-            className="input"
+            className="input add-title"
             type="text"
             placeholder="Add a movie or show…"
             value={input}
@@ -324,7 +309,7 @@ export default function StreamList() {
             aria-label={VOCAB.addToList}
             autoComplete="off"
             onKeyDown={(e) => e.key === "Enter" && submit(e)}
-            style={{ flex: 2 }}
+            style={{ flex: "0 1 auto" }}
           />
 
           <select
@@ -332,7 +317,7 @@ export default function StreamList() {
             value={genreChoice}
             onChange={(e) => setGenreChoice(e.target.value)}
             aria-label="Genre"
-            style={{ flex: 1 }}
+            style={{ flex: "0 1 auto" }}
           >
             <option value="">Select genre…</option>
             {COMMON_GENRES.map((g) => (
@@ -340,27 +325,29 @@ export default function StreamList() {
             ))}
           </select>
 
+          <button className="btn" type="submit" aria-label="Add">
+            <span className="material-icons">add</span>
+            Add
+          </button>
+
           {genreChoice === "Other" && (
             <input
-              className="input"
+              className="input custom-genre"
               type="text"
               placeholder="Custom genre"
               value={customGenre}
               onChange={(e) => setCustomGenre(e.target.value)}
               aria-label="Custom genre"
               autoComplete="off"
-              style={{ flex: 1 }}
+              style={{ flex: "0 1 auto" }}
             />
           )}
 
-          <button className="btn" type="submit" aria-label="Add">
-            <span className="material-icons">add</span>
-            Add
-          </button>
         </form>
+        </div>
 
         {/* Toolbar */}
-        <div className="toolbar" style={{ rowGap: 8 }}>
+        <div className="toolbar toolbar-streamlist" style={{ rowGap: 8 }}>
           <div className="filters" role="tablist" aria-label="Filter items">
             <button
               className={`chip ${filter === "all" ? "chip-active" : ""}`}
@@ -430,6 +417,24 @@ export default function StreamList() {
               </button>
             )}
           </div>
+        </div>
+
+        {/* Bottom actions (keep this set) */}
+        <div className="row-actions-bottom">
+          <ExportMenu
+            onCSV={() => exportCSV()}
+            onJSON={() => exportJSON()}
+            show={showExportMenu}
+            setShow={setShowExportMenu}
+            hideOther={() => setShowImportMenu(false)}
+          />
+          <ImportMenu
+            onCSV={() => onChooseImportCSV()}
+            onJSON={() => onChooseImportJSON()}
+            show={showImportMenu}
+            setShow={setShowImportMenu}
+            hideOther={() => setShowExportMenu(false)}
+          />
         </div>
 
         {/* List */}
