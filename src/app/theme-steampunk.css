@@ -583,7 +583,7 @@
 }
 .tv-holder-compact .tv-frame {
   width: 100%;
-  max-width: 400px; /* expanded to accommodate slightly larger TV */
+  max-width: 320px; /* smaller so the video fits comfortably */
 }
 
 /* Wide TV holder for detail page */
@@ -815,14 +815,11 @@ body { color: var(--text-parchment); }
 
 .tv-frame {
   position: relative;
-  /* Allow the TV GIF to grow beyond its normal layout box */
-  overflow: visible;
-  /* Contain blend effects to this frame */
+  /* Keep the TV contained to avoid overlapping other content */
+  overflow: hidden;
   isolation: isolate;
-  /* Nudge the TV down so it doesn't overlap prior text */
-  margin-top: 20px; /* final: 20px down */
-  /* Extra space under the scaled TV so content below doesn't crowd it */
-  margin-bottom: 28px;
+  margin-top: 20px; /* reverted: original position */
+  margin-bottom: 20px;
 }
 
 .tv-frame > img {
@@ -832,18 +829,15 @@ body { color: var(--text-parchment); }
   opacity: .9;
   /* Blend white pixels into the dark background to appear transparent */
   mix-blend-mode: multiply;
-  /* Grow downward (not upward) when scaled */
-  transform-origin: 50% 0%;
-  /* Enlarge the TV GIF a bit more, screen unchanged */
-  transform: scale(1.6);
 }
 
 .tv-screen {
   position: absolute;
-  /* Slightly smaller screen area so the video sits comfortably within the TV GIF */
-  inset: 14% 11% 28% 11%;
-  /* Nudge YouTube window: 11px left, 90px down (cumulative) */
-  transform: translate(-11px, 90px);
+  /* Screen area within the TV; make the top 5px smaller only */
+  top: calc(16% + 5px);
+  right: 14%;
+  bottom: 34%;
+  left: 14%;
   background: #0b1222;
   border: 1px solid rgba(193, 154, 58, 0.6);
   border-radius: 12px;
