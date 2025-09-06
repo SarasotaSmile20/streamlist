@@ -80,6 +80,7 @@ export default function MovieDetail() {
 
   return (
     <section className="page ledger-page playbill-bg">
+      <div className="container-1120">
       {/* Top toolbar */}
       <div className="toolbar" style={{ marginBottom: 8 }}>
         <Link to="/movies" className="btn btn-ghost">← Return to Gazette</Link>
@@ -158,6 +159,7 @@ export default function MovieDetail() {
             ) : null}
           </div>
         </main>
+      </div>
       </div>
     </section>
   );
