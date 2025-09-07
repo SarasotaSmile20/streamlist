@@ -4,6 +4,9 @@ import "./App.css";                        // App-wide styles (landing, navbar)
 import "@app/theme-steampunk.css"; // Theme (after Tailwind)
 
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@lib/firebase";
 
 // Landing (login)
 import CurtainLogin from "./Components/CurtainLogin";
@@ -16,13 +19,40 @@ import MovieDetail from "./pages/MovieDetail";
 import TVTrailer from "@features/video/TVTrailer";
 import Cart from "./Components/Cart";
 import About from "./Components/About";
+import LoungeChat from "./Components/LoungeChat";
 
 // Layout for post-login pages
 import AppLayout from "@app/AppLayout";
+import Admin from "@features/admin/Admin";
+import { isAdminEmail, getCurrentUserEmail } from "@utils/admin";
 
 function RequireAuth() {
-  const authed = !!localStorage.getItem("sl_user");
+  const [checked, setChecked] = useState(false);
+  const [authed, setAuthed] = useState(false);
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setAuthed(!!u);
+      setChecked(true);
+    });
+    return () => unsub();
+  }, []);
+  if (!checked) return null; // or a loader
   return authed ? <Outlet /> : <Navigate to="/" replace />;
+}
+
+function RequireAdmin() {
+  const [checked, setChecked] = useState(false);
+  const [ok, setOk] = useState(false);
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      const email = u?.email || getCurrentUserEmail();
+      setOk(!!email && isAdminEmail(email));
+      setChecked(true);
+    });
+    return () => unsub();
+  }, []);
+  if (!checked) return null;
+  return ok ? <Outlet /> : <Navigate to="/streamlist" replace />;
 }
 
 export default function App() {
@@ -42,6 +72,12 @@ export default function App() {
           {/** Watchlist removed */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/about" element={<About />} />
+          <Route path="/lounge" element={<LoungeChat />} />
+
+          {/* Admin-only */}
+          <Route element={<RequireAdmin />}>
+            <Route path="/admin" element={<Admin />} />
+          </Route>
         </Route>
       </Route>
 

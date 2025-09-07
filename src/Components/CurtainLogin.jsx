@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { demoVerify } from "../utils/passwordDemo";
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db } from "@lib/firebase"; // ✅ simplified import
 
 /**
  * Gold/Victorian styled login screen
- * - Uses projector background via body.stage-bg (set in CSS)
+ * - Uses projector background via body.curtain-mode (set in CSS)
  * - Glassy card, gold accents, subtle pink focus ring
  */
 export default function CurtainLogin() {
@@ -13,6 +18,9 @@ export default function CurtainLogin() {
 
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [msg, setMsg] = useState("");
+  const [working, setWorking] = useState(false);
+  const [resetInfo, setResetInfo] = useState("");
 
   useEffect(() => {
     emailRef.current?.focus();
@@ -20,32 +28,86 @@ export default function CurtainLogin() {
     return () => document.body.classList.remove("curtain-mode");
   }, []);
 
-  const [msg, setMsg] = useState("");
-  const [working, setWorking] = useState(false);
+  const normalizeEmail = (raw) => (raw || "").trim().toLowerCase();
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (working) return;
+
     setMsg("");
-    setWorking(true);
+    setResetInfo("");
+
+    const safeEmail = normalizeEmail(email);
+    if (!safeEmail || !pass) {
+      setMsg("Please enter your email and password.");
+      return;
+    }
+
     try {
-      const accounts = JSON.parse(localStorage.getItem("sl_accounts") || "{}");
-      const account = accounts[email];
-      if (!account) {
-        setMsg("No account found. Please register.");
-        return;
+      setWorking(true);
+      const cred = await signInWithEmailAndPassword(auth, safeEmail, pass);
+      const user = cred.user;
+
+      // Non-blocking profile upsert
+      try {
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            email: user.email || safeEmail,
+            lastLoginAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
+      } catch (e) {
+        console.warn("Profile write skipped (non-fatal)", e);
       }
-      const ok = await demoVerify(pass, account.hash);
-      if (!ok) {
-        setMsg("Incorrect email or password.");
-        return;
-      }
-      localStorage.setItem("sl_user", JSON.stringify({ email }));
+
       navigate("/streamlist", { replace: true });
     } catch (err) {
       console.error(err);
-      setMsg("Login failed.");
+      const code = err?.code || "auth/error";
+      const map = {
+        "auth/invalid-email": "Invalid email address.",
+        "auth/user-disabled": "This account is disabled.",
+        "auth/user-not-found": "No account found. Please register.",
+        "auth/wrong-password": "Incorrect email or password.",
+        "auth/too-many-requests":
+          "Too many attempts. Please wait a moment and try again.",
+        "auth/network-request-failed":
+          "Network error. Check your connection and try again.",
+        "auth/operation-not-allowed":
+          "Email/password sign-in is disabled in this project.",
+      };
+      setMsg(map[code] || "Login failed. Please try again.");
     } finally {
       setWorking(false);
+    }
+  };
+
+  const onForgotPassword = async () => {
+    setMsg("");
+    setResetInfo("");
+    const safeEmail = normalizeEmail(email);
+    if (!safeEmail) {
+      setMsg("Enter your email above, then click Forgot Password.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, safeEmail);
+      setResetInfo(
+        "If an account exists for that email, a reset link has been sent."
+      );
+    } catch (err) {
+      console.error(err);
+      const code = err?.code || "auth/error";
+      const map = {
+        "auth/invalid-email": "Invalid email address.",
+        "auth/user-not-found":
+          "If an account exists for that email, a reset link will be sent.",
+        "auth/too-many-requests":
+          "Too many attempts. Please wait a moment and try again.",
+      };
+      setMsg(map[code] || "Could not send reset email. Please try again.");
     }
   };
 
@@ -57,7 +119,7 @@ export default function CurtainLogin() {
       </header>
 
       <section className="signin-wrap">
-        <form className="signin-card" onSubmit={onSubmit}>
+        <form className="signin-card" onSubmit={onSubmit} noValidate>
           <label className="field">
             <span className="field-label">Email</span>
             <input
@@ -68,6 +130,7 @@ export default function CurtainLogin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="username"
+              inputMode="email"
               required
             />
           </label>
@@ -85,20 +148,48 @@ export default function CurtainLogin() {
             />
           </label>
 
-          {msg ? (
-            <div className="muted" style={{ color: "#f4c2d8", margin: "4px 2px 10px" }}>{msg}</div>
-          ) : null}
+          {msg && (
+            <div
+              className="muted"
+              style={{ color: "#f4c2d8", margin: "4px 2px 8px" }}
+            >
+              {msg}
+            </div>
+          )}
 
-          <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+          {resetInfo && (
+            <div className="muted" style={{ margin: "0 2px 8px" }}>
+              {resetInfo}
+            </div>
+          )}
+
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
             <button type="submit" className="btn-gold" disabled={working}>
               {working ? "Checking..." : "Present Your Papers"}
             </button>
+
             <button
               type="button"
               className="btn-teal"
               onClick={() => navigate("/register")}
             >
               New here? Join the Guild
+            </button>
+
+            <button
+              type="button"
+              className="nav-link"
+              onClick={onForgotPassword}
+              style={{ marginLeft: "auto", padding: 6, borderRadius: 8 }}
+            >
+              Forgot password?
             </button>
           </div>
         </form>

@@ -7,9 +7,9 @@
       "@ui/*": ["ui/*"],
       "@hooks/*": ["hooks/*"],
       "@utils/*": ["utils/*"],
+      "@lib/*": ["lib/*"],
       "@services/*": ["services/*"]
     }
   },
   "exclude": ["node_modules", "dist"]
 }
-

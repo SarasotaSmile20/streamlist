@@ -1,5 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
 import { VOCAB } from "@utils/vocabulary";
+import { isAdminEmail, getCurrentUserEmail } from "@utils/admin";
+import { signOut } from "firebase/auth";
+import { auth } from "@lib/firebase";
 import heart from "../assets/heart.gif";
 import "./NavBar.css";
 
@@ -10,6 +13,8 @@ import "./NavBar.css";
  * - Logout clears sl_user and returns to "/"
  */
 export default function Navbar() {
+  const email = getCurrentUserEmail();
+  const isAdmin = email && isAdminEmail(email);
   return (
     <header className="navbar">
       <Link to="/streamlist" className="brand" aria-label="StreamList Home">
@@ -24,6 +29,8 @@ export default function Navbar() {
         <NavItem to="/movies" label={VOCAB.navGazette} />
         <NavItem to="/cart" label={VOCAB.cart} />
         <NavItem to="/about" label={VOCAB.about} />
+        <NavItem to="/lounge" label="Lounge" />
+        {isAdmin ? <NavItem to="/admin" label="Admin" /> : null}
         <LogoutButton />
       </nav>
     </header>
@@ -44,8 +51,8 @@ function NavItem({ to, label }) {
 }
 
 function LogoutButton() {
-  function handle() {
-    localStorage.removeItem("sl_user");
+  async function handle() {
+    try { await signOut(auth); } catch {}
     window.location.assign("/");
   }
   return (
