@@ -10,7 +10,6 @@
     "**/.cache": true,
     "**/coverage": true
   },
-
   // Don’t search inside heavy folders
   "search.exclude": {
     "**/node_modules": true,
@@ -21,7 +20,6 @@
     "**/.cache": true,
     "**/coverage": true
   },
-
   // Prevent VS Code from watching these files (saves CPU/RAM)
   "files.watcherExclude": {
     "**/node_modules/**": true,
@@ -32,11 +30,10 @@
     "**/.cache/**": true,
     "**/coverage/**": true
   },
-
   // Editor quality of life
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
-
   // Keep AI suggestions manual instead of auto (so Codex won’t lag)
-  "editor.inlineSuggest.enabled": false
+  "editor.inlineSuggest.enabled": false,
+  "CodeGPT.apiKey": "OpenAI"
 }
