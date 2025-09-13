@@ -17,6 +17,29 @@ export async function searchMovies(query, page = 1) {
   return data;
 }
 
+// Search people (actors, directors, etc.) by name
+export async function searchPeople(query, page = 1) {
+  if (!API_KEY) throw new Error("Missing REACT_APP_TMDB_API_KEY");
+  if (!query?.trim()) return { results: [], page: 1, total_pages: 0 };
+  const { data } = await client.get("/search/person", {
+    params: { query, page, include_adult: false },
+  });
+  return data;
+}
+
+// Discover movies with flexible filters (genre, cast, dates, sorting)
+export async function discoverMovies(params = {}) {
+  if (!API_KEY) throw new Error("Missing REACT_APP_TMDB_API_KEY");
+  const { data } = await client.get("/discover/movie", {
+    params: {
+      include_adult: false,
+      sort_by: "popularity.desc",
+      ...params,
+    },
+  });
+  return data;
+}
+
 export async function getMovie(id) {
   if (!API_KEY) throw new Error("Missing REACT_APP_TMDB_API_KEY");
   const { data } = await client.get(`/movie/${id}`, {
@@ -54,3 +77,8 @@ export const GENRE_NAMES = {
   10752: "War",
   37: "Western"
 };
+
+// Reverse map: name → id (case-sensitive to our names)
+export const GENRE_IDS_BY_NAME = Object.fromEntries(
+  Object.entries(GENRE_NAMES).map(([id, name]) => [name, Number(id)])
+);

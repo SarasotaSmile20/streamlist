@@ -18,13 +18,13 @@ export default function Admin() {
   return (
     <section className="page ledger-page">
       <div className="container-1120">
-        <h1 className="title font-cinzelDecorative text-primary title-engrave" style={{ marginBottom: 12 }}>
+        <h1 className="title page-heading--nav" style={{ marginBottom: 12 }}>
           <span className="material-icons title-icon">admin_panel_settings</span>
-          Admin: Registrations
+          Admin
         </h1>
 
         <p className="muted" style={{ marginBottom: 16 }}>
-          Total registered accounts: {accounts.length}
+          Registrations • Total accounts: {accounts.length}
         </p>
 
         {accounts.length === 0 ? (

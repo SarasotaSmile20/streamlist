@@ -291,9 +291,9 @@ export default function StreamList() {
       <div className="container-1120">
         {/* Title left; actions move next to form */}
         <div style={{ display: "grid", gap: 8, marginBottom: 12 }}>
-          <h1 className="title font-cinzelDecorative text-primary title-engrave" style={{ margin: 0 }}>
+          <h1 className="title page-heading--nav" style={{ margin: 0 }}>
             <span className="material-icons title-icon">playlist_add_check</span>
-            StreamList
+            {VOCAB.tasks}
           </h1>
         </div>
 

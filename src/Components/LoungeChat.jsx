@@ -137,11 +137,12 @@ export default function LoungeChat() {
       marginBottom: 12,
     },
     title: {
-      fontSize: 28,
+      fontFamily: 'Macondo, "Macondo Swash Caps", serif',
+      fontSize: '1.2rem',
       fontWeight: 700,
       letterSpacing: 0.5,
-      color: "#f1d27a",
-      textShadow: "0 0 8px rgba(241,210,122,0.4)",
+      color: 'var(--soft-white)',
+      textShadow: 'none',
     },
     sub: { color: "#c9b26a", fontSize: 12 },
     list: {
@@ -209,7 +210,7 @@ export default function LoungeChat() {
     <main className="container-1120" style={{ padding: 16 }}>
       <section style={styles.wrap}>
         <header style={styles.head}>
-          <h2 style={styles.title}>Guild Lounge</h2>
+          <h2 style={styles.title}>Lounge</h2>
           <div style={styles.sub}>Signed in as: {name}</div>
         </header>
 
@@ -256,4 +257,3 @@ export default function LoungeChat() {
     </main>
   );
 }
-

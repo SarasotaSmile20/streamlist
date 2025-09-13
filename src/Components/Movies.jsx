@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { searchMovies, posterUrl } from "@services/tmdb";
+import { searchMovies, searchPeople, discoverMovies, posterUrl, GENRE_NAMES, GENRE_IDS_BY_NAME } from "@services/tmdb";
 import { usePersistentList } from "@hooks/usePersistentList";
 import { VOCAB } from "@utils/vocabulary";
 import { logEvent } from "../utils/eventLogger";
@@ -26,6 +26,8 @@ export default function Movies() {
   const [results, setResults] = useLocalStorage("streamlist:tmdb:results", []);
   const [page, setPage] = useLocalStorage("streamlist:tmdb:page", 1);
   const [totalPages, setTotalPages] = useLocalStorage("streamlist:tmdb:total_pages", 0);
+  const [mode, setMode] = useLocalStorage("streamlist:tmdb:mode", "title"); // title | actor | genre | new
+  const [genreName, setGenreName] = useLocalStorage("streamlist:tmdb:genre", "");
 
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
@@ -42,25 +44,50 @@ export default function Movies() {
   }, [setQuery, setResults, setPage, setTotalPages]);
 
   const runSearch = useCallback(async (p = 1) => {
-    if (!query.trim()) { clearSearch(); return; }
+    // For title/actor we require a text query; for genre/new we don't
+    if ((mode === "title" || mode === "actor") && !query.trim()) { clearSearch(); return; }
+    if (mode === "genre" && !genreName) { setErr("Pick a genre."); return; }
     setLoading(true); setErr("");
     try {
-      const data = await searchMovies(query, p);
+      let data;
+      if (mode === "title") {
+        data = await searchMovies(query, p);
+      } else if (mode === "actor") {
+        const people = await searchPeople(query, 1);
+        const person = (people.results || [])[0];
+        if (!person) { setResults([]); setPage(1); setTotalPages(0); setLoading(false); return; }
+        data = await discoverMovies({ with_cast: person.id, page: p, sort_by: "popularity.desc" });
+      } else if (mode === "genre") {
+        const gid = GENRE_IDS_BY_NAME[genreName];
+        data = await discoverMovies({ with_genres: gid, page: p, sort_by: "popularity.desc" });
+      } else if (mode === "new") {
+        const days = 90;
+        const d = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+        const gte = d.toISOString().slice(0, 10);
+        data = await discoverMovies({
+          'primary_release_date.gte': gte,
+          sort_by: "primary_release_date.desc",
+          page: p,
+        });
+      } else {
+        data = { results: [], page: 1, total_pages: 0 };
+      }
       setResults(data.results || []);
       setPage(data.page || 1);
       setTotalPages(data.total_pages || 0);
-      logEvent("tmdb_search", { query, page: p });
+      logEvent("tmdb_search", { query, page: p, mode, genre: genreName || undefined });
     } catch (e) {
       console.error(e);
       setErr("Failed to search TMDB. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, [query, clearSearch, setLoading, setErr, setResults, setPage, setTotalPages]);
+  }, [query, mode, genreName, clearSearch, setLoading, setErr, setResults, setPage, setTotalPages]);
 
   useEffect(() => {
-    if (query && results.length === 0) runSearch(page);
-  }, [query, results.length, page, runSearch]);
+    if ((mode === "title" || mode === "actor") && query && results.length === 0) runSearch(page);
+    if ((mode === "genre" || mode === "new") && results.length === 0) runSearch(page);
+  }, [mode, query, results.length, page, runSearch]);
 
   const hasMore = useMemo(() => totalPages > page, [totalPages, page]);
 
@@ -94,7 +121,12 @@ export default function Movies() {
     const key = String(m?.title || "").trim().toLowerCase().replace(/\s+/g, " ");
     const exists = items.some((i) => String(i.title || "").trim().toLowerCase().replace(/\s+/g, " ") === key);
     if (exists) return;
-    dispatch({ type: "ADD", title: m.title, genre: "" });
+    // Map TMDB genre_ids → first known genre name (fallback to empty)
+    const gid = Array.isArray(m?.genre_ids) && m.genre_ids.length ? m.genre_ids[0] : null;
+    const genre = gid != null && Object.prototype.hasOwnProperty.call(GENRE_NAMES, gid)
+      ? GENRE_NAMES[gid]
+      : "";
+    dispatch({ type: "ADD", title: m.title, genre });
   }
   function removeFavorite(id) {
     setFavorites(prev => prev.filter(f => String(f.id) !== String(id)));
@@ -240,9 +272,9 @@ export default function Movies() {
   return (
     <section className="page ledger-page">
       <div className="container-1120">
-        <h1 className="title font-cinzelDecorative text-primary title-engrave" style={{ marginTop: 0, marginBottom: 12 }}>
+        <h1 className="title page-heading--nav" style={{ marginTop: 0, marginBottom: 12 }}>
           <span className="material-icons title-icon">local_movies</span>
-          Movies
+          {VOCAB.navGazette}
         </h1>
 
         {/* Search row — standalone like StreamList */}
@@ -251,12 +283,42 @@ export default function Movies() {
             className="form form-movies"
             onSubmit={(e) => { e.preventDefault(); runSearch(1); }}
           >
-            <input
-              className="input search-input"
-              placeholder={`${VOCAB.search}…`}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
+            <select
+              className="input"
+              value={mode}
+              onChange={(e) => setMode(e.target.value)}
+              aria-label="Search mode"
+              style={{ flex: "0 0 auto" }}
+            >
+              <option value="title">Title</option>
+              <option value="actor">Actor</option>
+              <option value="genre">Genre</option>
+              <option value="new">New Releases</option>
+            </select>
+
+            {(mode === "title" || mode === "actor") && (
+              <input
+                className="input search-input"
+                placeholder={mode === "actor" ? "Search by actor name…" : `${VOCAB.search}…`}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            )}
+
+            {mode === "genre" && (
+              <select
+                className="input"
+                value={genreName}
+                onChange={(e) => setGenreName(e.target.value)}
+                aria-label="Select genre"
+              >
+                <option value="">Select genre…</option>
+                {Object.values(GENRE_NAMES).map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
+            )}
+
             <button
               className="btn"
               type="submit"
@@ -267,17 +329,15 @@ export default function Movies() {
               {loading ? "Summoning…" : VOCAB.search}
             </button>
           </form>
-          {query && (
+          {(mode === "title" || mode === "actor") && query && (
             <div className="clear-right">
               <button className="btn" type="button" onClick={clearSearch}>Clear</button>
             </div>
           )}
         </div>
 
-        {err && <p className="muted">{err}</p>}
-
-        {/* Batch action bar (single set of buttons; select tiles first) */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, marginBottom: 4 }}>
+        {/* Actions directly under the search row */}
+        <div className="below-search-actions">
           <button
             type="button"
             className="btn"
@@ -301,6 +361,10 @@ export default function Movies() {
           </button>
           <span className="muted" aria-live="polite">{selectedCount} selected</span>
         </div>
+
+        {err && <p className="muted">{err}</p>}
+
+        {/* Old batch action bar removed; now placed above */}
 
         {/* Results + Favorites column */}
         <div className="movies-grid" role="region" aria-label="Search results and Treasured list">

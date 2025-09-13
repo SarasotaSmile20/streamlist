@@ -2,7 +2,7 @@ export default function About() {
   return (
     <section className="page ledger-page">
       <div className="container-1120">
-        <h1 className="title">
+        <h1 className="title page-heading--nav">
           <span className="material-icons title-icon">info</span>
           About the Guild
         </h1>

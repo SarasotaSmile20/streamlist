@@ -260,6 +260,13 @@
   gap: 8px;
 }
 
+/* Make page titles match navbar typography (light, same size) */
+.page-heading--nav {
+  font-family: "Macondo", "Macondo Swash Caps", serif;
+  font-size: 1.2rem; /* match .navbar links */
+  color: var(--soft-white);
+}
+
 .title-icon {
   font-size: 26px;
   opacity: .9;
@@ -379,6 +386,9 @@
   cursor: pointer;
 }
 .btn-clean:hover { filter: brightness(1.05); }
+
+/* Make Gazette favorites Remove button white like navbar */
+.favorites-toolbar .btn-clean { color: var(--soft-white); }
 
 /* Chips */
 .chip {
@@ -501,6 +511,16 @@
 .form-movies .search-input { width: clamp(320px, 52vw, 520px); }
 .row-movies { position: relative; max-width: 960px; margin: 0 auto 12px; }
 .row-movies .clear-right { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
+
+/* Center the action buttons under the search bar */
+.below-search-actions {
+  max-width: 960px;
+  margin: 6px auto 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
 
 @media (max-width: 900px) {
   .form-movies .search-input { width: 100%; }
