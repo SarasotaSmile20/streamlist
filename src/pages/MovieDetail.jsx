@@ -1,14 +1,14 @@
 import "../app/theme-steampunk.css";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getMovie, posterUrl } from "@services/tmdb";
+import { getMovie, posterUrl } from "services/tmdb";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { usePersistentList } from "../hooks/usePersistentList";
 import { logEvent } from "../utils/eventLogger";
 
 // Steampunk UI helpers
-import TVTrailer from "@features/video/TVTrailer";
-import AddToFavoritesButton from "@features/lists/AddToFavoritesButton";
+import TVTrailer from "features/video/TVTrailer";
+import AddToFavoritesButton from "features/lists/AddToFavoritesButton";
 
 export default function MovieDetail() {
   const { id } = useParams();

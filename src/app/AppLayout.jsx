@@ -1,7 +1,7 @@
 // src/layouts/AppLayout.jsx
 import { Outlet } from "react-router-dom";
 import Navbar from "../Components/Navbar";
-import { Scene } from "@ui/Scene";
+import { Scene } from "ui/Scene";
 import GearBurst from "../Components/GearBurst";
 
 /**

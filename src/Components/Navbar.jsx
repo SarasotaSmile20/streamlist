@@ -1,8 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
-import { VOCAB } from "@utils/vocabulary";
-import { isAdminEmail, getCurrentUserEmail } from "@utils/admin";
+import { VOCAB } from "utils/vocabulary";
+import { isAdminEmail, getCurrentUserEmail } from "utils/admin";
 import { signOut } from "firebase/auth";
-import { auth } from "@lib/firebase";
+import { auth } from "lib/firebase";
 import heart from "../assets/heart.gif";
 import "./NavBar.css";
 

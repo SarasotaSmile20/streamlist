@@ -5,7 +5,7 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { auth, db } from "@lib/firebase"; // ✅ simplified import
+import { auth, db } from "lib/firebase"; // ✅ simplified import
 
 /**
  * Gold/Victorian styled login screen

@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { searchMovies, searchPeople, discoverMovies, posterUrl, GENRE_NAMES, GENRE_IDS_BY_NAME } from "@services/tmdb";
-import { usePersistentList } from "@hooks/usePersistentList";
-import { VOCAB } from "@utils/vocabulary";
+import { searchMovies, searchPeople, discoverMovies, posterUrl, GENRE_NAMES, GENRE_IDS_BY_NAME } from "services/tmdb";
+import { usePersistentList } from "hooks/usePersistentList";
+import { VOCAB } from "utils/vocabulary";
 import { logEvent } from "../utils/eventLogger";
 import letterGif from "../assets/Letter.gif";
 import clockGif from "../assets/Clock.gif";

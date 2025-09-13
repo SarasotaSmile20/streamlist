@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import "@app/theme-steampunk.css";
+import "app/theme-steampunk.css";
 
 /**
  * GearBurst

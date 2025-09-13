@@ -17,10 +17,13 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "prestart": "node scripts/preflight.js",
+    "start": "node ./node_modules/react-scripts/scripts/start.js",
+    "prebuild": "node scripts/preflight.js",
+    "build": "node ./node_modules/react-scripts/scripts/build.js",
+    "pretest": "node scripts/preflight.js",
+    "test": "node ./node_modules/react-scripts/scripts/test.js",
+    "eject": "node ./node_modules/react-scripts/scripts/eject.js"
   },
   "eslintConfig": {
     "extends": [
@@ -40,7 +43,10 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@craco/craco": "^7.1.0"
+  "devDependencies": {},
+  "overrides": {},
+  "engines": {
+    "node": ">=14.17 <23",
+    "npm": ">=7"
   }
 }

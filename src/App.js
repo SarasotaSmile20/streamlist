@@ -1,30 +1,30 @@
 // src/App.js
 import "./index.css";                      // Tailwind base
 import "./App.css";                        // App-wide styles (landing, navbar)
-import "@app/theme-steampunk.css"; // Theme (after Tailwind)
+import "app/theme-steampunk.css"; // Theme (after Tailwind)
 
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@lib/firebase";
+import { auth } from "lib/firebase";
 
 // Landing (login)
 import CurtainLogin from "./Components/CurtainLogin";
-import Register from "@features/auth/Register";
+import Register from "features/auth/Register";
 
 // Top-level pages
-import StreamList from "@features/lists/StreamList";
+import StreamList from "features/lists/StreamList";
 import Movies from "./Components/Movies";
 import MovieDetail from "./pages/MovieDetail";
-import TVTrailer from "@features/video/TVTrailer";
+import TVTrailer from "features/video/TVTrailer";
 import Cart from "./Components/Cart";
 import About from "./Components/About";
 import LoungeChat from "./Components/LoungeChat";
 
 // Layout for post-login pages
-import AppLayout from "@app/AppLayout";
-import Admin from "@features/admin/Admin";
-import { isAdminEmail, getCurrentUserEmail } from "@utils/admin";
+import AppLayout from "app/AppLayout";
+import Admin from "features/admin/Admin";
+import { isAdminEmail, getCurrentUserEmail } from "utils/admin";
 
 function RequireAuth() {
   const [checked, setChecked] = useState(false);
