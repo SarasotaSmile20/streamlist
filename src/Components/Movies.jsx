@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 import useLocalStorage from "../hooks/useLocalStorage";
-import { searchMovies, searchPeople, discoverMovies, posterUrl, GENRE_NAMES, GENRE_IDS_BY_NAME } from "services/tmdb";
-import { usePersistentList } from "hooks/usePersistentList";
-import { VOCAB } from "utils/vocabulary";
+import { searchMovies, searchPeople, discoverMovies, posterUrl, GENRE_NAMES, GENRE_IDS_BY_NAME } from "../services/tmdb";
+import { usePersistentList } from "../hooks/usePersistentList";
+import { VOCAB } from "../utils/vocabulary";
 import { logEvent } from "../utils/eventLogger";
 import letterGif from "../assets/Letter.gif";
-import clockGif from "../assets/Clock.gif";
-import skullGif from "../assets/skull.gif";
+import clockGif from "../assets/Clock.gif"; // retained if used elsewhere
+import keyImg from "../assets/key.jpeg";
 import dinoGif from "../assets/dino.gif";
-import vehicleGif from "../assets/vehicle.gif";
-import raygunGif from "../assets/raygun.gif";
+import bulldozerGif from "../assets/bulldozer.gif";
+import heartGif from "../assets/heart.gif";
 
 /**
  * NOTE: This keeps your typical Movies logic intact:
@@ -168,106 +168,78 @@ export default function Movies() {
     clearSelection();
   }
 
-  // Visual flair: on clicking Add to Cabinet, drive a vehicle gif to the right with steam and fade
-  function driveVehicleFromButton(e) {
+  // Visual flair: slower, opaque bulldozer that loops when triggered
+  const dozerRef = useRef(null);
+  const [dozerOn, setDozerOn] = useState(false);
+
+  function startDozerLoop(e) {
     try {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const img = document.createElement("img");
-      img.src = vehicleGif;
-      img.alt = "";
-      img.className = "vehicle-sprite";
-      Object.assign(img.style, {
-        position: "fixed",
-        left: `${rect.left + rect.width + 8}px`,
-        top: `${rect.top + rect.height / 2 - 18}px`,
-        width: "36px",
-        height: "36px",
-        objectFit: "contain",
-        pointerEvents: "none",
-        zIndex: 2147483647,
-        animation: "drive-right-fade 4500ms cubic-bezier(.2,.8,.2,1) forwards",
-      });
-      document.body.appendChild(img);
-      // Steam puffs
-      const puffInterval = setInterval(() => {
-        const r = img.getBoundingClientRect();
-        const puff = document.createElement("div");
-        puff.className = "steam-puff";
-        Object.assign(puff.style, {
-          left: `${r.left - 6}px`,
-          top: `${r.top + r.height / 2}px`,
+      setDozerOn(true);
+      // Also immediately position if available
+      const btnRect = e?.currentTarget?.getBoundingClientRect?.();
+      if (btnRect && dozerRef.current) {
+        Object.assign(dozerRef.current.style, {
+          left: `${btnRect.right + 8}px`,
+          top: `${btnRect.top + btnRect.height / 2 - 18}px`,
         });
-        document.body.appendChild(puff);
-        puff.addEventListener("animationend", () => puff.remove(), { once: true });
-      }, 220);
-      img.addEventListener("animationend", () => { clearInterval(puffInterval); img.remove(); }, { once: true });
+      }
     } catch (_) { /* noop */ }
   }
 
   function handleAddToCabinet(e) {
-    driveVehicleFromButton(e);
+    startDozerLoop(e); // trigger looping bulldozer
     addSelectedToCabinet();
   }
 
-  // Continuous steampunk vehicle animation starting at the right of the Add to Cabinet button
+  // Create a single bulldozer that loops indefinitely once triggered
   const btnRef = useRef(null);
-
   useEffect(() => {
-    let timer = null;
-    let running = true;
+    if (!dozerOn) return;
+    const btn = btnRef.current;
+    if (!btn) return;
 
-    function spawnOnce() {
-      if (!running) return;
-      const btn = btnRef.current;
-      if (!btn) { timer = setTimeout(spawnOnce, 600); return; }
+    const ensureDozer = () => {
       const rect = btn.getBoundingClientRect();
-      const img = document.createElement("img");
-      img.src = vehicleGif;
-      img.alt = "";
-      img.className = "vehicle-sprite";
+      let img = dozerRef.current;
+      if (!img) {
+        img = document.createElement("img");
+        img.src = bulldozerGif;
+        img.alt = "";
+        img.className = "vehicle-sprite";
+        Object.assign(img.style, {
+          position: "fixed",
+          width: "36px",
+          height: "36px",
+          objectFit: "contain",
+          pointerEvents: "none",
+          zIndex: 2147483647,
+          // Slower, fully opaque, continuous loop
+          animation: "drive-right-loop 12000ms linear infinite",
+        });
+        document.body.appendChild(img);
+        dozerRef.current = img;
+      }
       Object.assign(img.style, {
-        position: "fixed",
         left: `${rect.right + 8}px`,
         top: `${rect.top + rect.height / 2 - 18}px`,
-        width: "36px",
-        height: "36px",
-        objectFit: "contain",
-        pointerEvents: "none",
-        zIndex: 2147483647,
-        animation: "drive-right-fade 5000ms cubic-bezier(.2,.8,.2,1) forwards",
       });
-      document.body.appendChild(img);
-      // Steam puffs while driving
-      const puffInterval = setInterval(() => {
-        const r = img.getBoundingClientRect();
-        const puff = document.createElement("div");
-        puff.className = "steam-puff";
-        Object.assign(puff.style, { left: `${r.left - 6}px`, top: `${r.top + r.height / 2}px` });
-        document.body.appendChild(puff);
-        puff.addEventListener("animationend", () => puff.remove(), { once: true });
-      }, 240);
-      img.addEventListener("animationend", () => {
-        clearInterval(puffInterval);
-        img.remove();
-        if (running) timer = setTimeout(spawnOnce, 1800);
-      }, { once: true });
-    }
+    };
 
-    // Kick off loop after mount
-    timer = setTimeout(spawnOnce, 1800);
-
-    // Reposition on scroll/resize between loops
-    const onVisChange = () => { /* no-op: next spawn reads rect */ };
+    // Initial place and then keep it aligned on scroll/resize
+    ensureDozer();
+    const onVisChange = () => ensureDozer();
     window.addEventListener("scroll", onVisChange, { passive: true });
     window.addEventListener("resize", onVisChange);
 
     return () => {
-      running = false;
-      if (timer) clearTimeout(timer);
       window.removeEventListener("scroll", onVisChange);
       window.removeEventListener("resize", onVisChange);
+      if (dozerRef.current) {
+        dozerRef.current.remove();
+        dozerRef.current = null;
+      }
     };
-  }, []);
+  }, [dozerOn]);
 
   return (
     <section className="page ledger-page">
@@ -356,7 +328,7 @@ export default function Movies() {
             title="Add selected to Cabinet"
             ref={btnRef}
           >
-            <img src={raygunGif} alt="" className="shimmer-icon" style={{ width: 44, height: 44, objectFit: "contain", marginRight: 6 }} />
+            <img src={heartGif} alt="" className="shimmer-icon" style={{ width: 44, height: 44, objectFit: "contain", marginRight: 6 }} />
             Add to Cabinet
           </button>
           <span className="muted" aria-live="polite">{selectedCount} selected</span>
@@ -429,7 +401,7 @@ export default function Movies() {
                 title="Remove selected from treasures"
                 aria-label="Remove selected from treasures"
               >
-                <img src={skullGif} alt="" style={{ width: 44, height: 44, objectFit: "contain" }} />
+                <img src={keyImg} alt="" style={{ width: 44, height: 44, objectFit: "contain" }} />
                 Remove
               </button>
               <span className="muted" aria-live="polite">{favSelectedCount} selected</span>

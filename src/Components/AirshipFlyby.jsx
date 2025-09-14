@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import "app/theme-steampunk.css";
+import "../app/theme-steampunk.css";
 import airship from "../assets/airship.gif";
 
 const AirshipFlyby = forwardRef(function AirshipFlyby(_, ref){

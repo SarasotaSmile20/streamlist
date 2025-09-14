@@ -1,6 +1,6 @@
 // src/utils/admin.js
 
-import { auth, db } from "lib/firebase";
+import { auth, db } from "../lib/firebase";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 
 export const ADMIN_EMAIL = "courtneygreens85@gmail.com";

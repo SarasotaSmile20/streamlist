@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { readRegisteredAccounts } from "utils/admin";
+import { readRegisteredAccounts } from "../../utils/admin";
 import { Timestamp } from "firebase/firestore";
 
 export default function Admin() {

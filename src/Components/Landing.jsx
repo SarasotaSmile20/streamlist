@@ -1,6 +1,6 @@
 // src/Components/Landing.jsx
 import React from "react";
-import "app/theme-steampunk.css";
+import "../app/theme-steampunk.css";
 
 export default function Landing({ onStart }) {
   return (

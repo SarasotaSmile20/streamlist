@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import "app/theme-steampunk.css";
+import "../../app/theme-steampunk.css";
 import tv from "../../assets/tv.gif";
 
 export default function TVTrailer({ youtubeKey, videoSrc, showStatus = true }) {

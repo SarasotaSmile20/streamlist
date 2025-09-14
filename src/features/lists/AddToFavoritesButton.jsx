@@ -1,7 +1,7 @@
 import React from "react";
 import { useAirship } from "../../Components/AirshipProvider";
 import { VOCAB } from "../../utils/vocabulary";
-import "app/theme-steampunk.css";
+import "../../app/theme-steampunk.css";
 
 export default function AddToFavoritesButton({
   movie, onAdd,
