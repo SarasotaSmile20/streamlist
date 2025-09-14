@@ -1,5 +1,5 @@
 /* Simple cart/catalog styling that matches the steampunk theme */
-.cart-grid { display: block; }
+.cart-grid { display: grid; grid-template-columns: 1fr 360px; gap: 16px; align-items: start; }
 
 @media (max-width: 1000px) {
   .cart-grid { grid-template-columns: 1fr; }
@@ -30,7 +30,7 @@
 
 .alert-warn { background: rgba(192, 31, 31, 0.15); border: 1px solid rgba(192,31,31,0.5); color: #ffd4d4; padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; }
 
-.cart-panel { background: rgba(18, 14, 10, 0.6); border: 1px solid rgba(194, 158, 89, 0.35); border-radius: 12px; padding: 12px; width: 360px; margin-left: auto; margin-bottom: 16px; position: static; }
+.cart-panel { background: rgba(18, 14, 10, 0.6); border: 1px solid rgba(194, 158, 89, 0.35); border-radius: 12px; padding: 12px; width: 360px; margin-left: auto; margin-bottom: 16px; position: sticky; top: 12px; }
 .cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .cart-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
 .cart-item { display: grid; grid-template-columns: 56px 1fr auto auto; gap: 10px; align-items: center; border-bottom: 1px dashed rgba(194,158,89,0.25); padding-bottom: 8px; }
@@ -44,16 +44,16 @@
 .qty-input { width: 56px; padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(194,158,89,0.35); background: rgba(0,0,0,0.25); color: #f7e8c4; }
 .remove { font-size: 12px; opacity: 0.85; }
 
-.cart-total { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 8px; border-top: 1px solid rgba(194,158,89,0.25); font-size: 16px; }
+.cart-total { display: block; margin-top: 12px; padding-top: 8px; border-top: 1px solid rgba(194,158,89,0.25); font-size: 16px; }
+.cart-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.cart-row--total { font-weight: 700; color: #f2d38b; }
+.checkout-btn { width: 100%; margin-top: 10px; }
+
+.cart-cat { width: 100%; height: auto; max-height: 160px; object-fit: contain; border-radius: 8px; margin-bottom: 8px; background: rgba(0,0,0,0.2); }
 
 /* Navbar cart badge */
 .cart-link { display: inline-flex; align-items: center; gap: 6px; }
 .cart-badge { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 12px; background: #b68a2b; color: #1b1208; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; border: 1px solid #704f10; }
 
-/* Wheel carousel for subscriptions */
-.wheel { position: relative; display: block; margin-bottom: 10px; overflow: hidden; z-index: 0; }
-.wheel-track { display: grid; grid-auto-flow: column; grid-auto-columns: 260px; gap: 16px; transition: transform 300ms ease; }
-.wheel-item { }
-.wheel-dots { display: flex; gap: 6px; justify-content: center; margin-top: 8px; grid-column: 1 / -1; }
-.wheel-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #b88a2b; background: rgba(184,138,43,0.25); }
-.wheel-dot.is-active { background: #b88a2b; box-shadow: 0 0 0 2px rgba(255,215,141,0.2); }
+/* Inline grid for subscriptions now; keep general card grid above */
+.grid--subs { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }

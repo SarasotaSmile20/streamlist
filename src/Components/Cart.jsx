@@ -1,11 +1,20 @@
 import list from "../data";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useCart } from "../features/cart/CartContext";
+import cat from "../assets/cat.gif";
 import "./Cart.css";
 
 export default function Cart() {
   const { items, addToCart, removeFromCart, increment, setQuantity, subtotal, clearCart } = useCart();
   const [notice, setNotice] = useState(null);
+
+  // Basic sales tax configuration (7%)
+  const TAX_RATE = 0.07;
+  const { tax, total } = useMemo(() => {
+    const tax = +(subtotal * TAX_RATE).toFixed(2);
+    const total = +(subtotal + tax).toFixed(2);
+    return { tax, total };
+  }, [subtotal]);
 
   const handleAdd = (p) => {
     const res = addToCart(p);
@@ -14,6 +23,29 @@ export default function Cart() {
       setTimeout(() => setNotice(null), 3000);
     }
   };
+
+  const handleCheckout = () => {
+    if (!items.length) return;
+    // Simple placeholder checkout action
+    setNotice(`Checked out successfully. Total charged: $${total.toFixed(2)}`);
+    setTimeout(() => setNotice(null), 4000);
+    clearCart();
+  };
+
+  // Helpers to segment catalog
+  const subs = useMemo(
+    () => list.filter((p) => p.service.toLowerCase().includes("subscription")),
+    []
+  );
+  const shirts = useMemo(
+    () =>
+      list.filter(
+        (p) =>
+          !p.service.toLowerCase().includes("subscription") &&
+          (p.service.toLowerCase().includes("shirt") || (p.img || "").toLowerCase().includes("t-shirt"))
+      ),
+    []
+  );
 
   return (
     <section className="page ledger-page">
@@ -28,7 +60,24 @@ export default function Cart() {
         ) : null}
 
         <div className="cart-grid">
+          <div className="catalog">
+            <h2 className="section-title">Subscriptions</h2>
+            <div className="grid grid--subs">
+              {subs.map((p) => (
+                <ProductCard key={p.id} p={p} onAdd={() => handleAdd(p)} variant="subscription" />
+              ))}
+            </div>
+
+            <h2 className="section-title">Shirts</h2>
+            <div className="grid">
+              {shirts.map((p) => (
+                <ProductCard key={p.id} p={p} onAdd={() => handleAdd(p)} />
+              ))}
+            </div>
+          </div>
+
           <div className="cart-panel">
+            <img className="cart-cat" src={cat} alt="Animated cat" />
             <div className="cart-header">
               <h2 className="section-title">Your Cart</h2>
               {items.length ? (
@@ -68,25 +117,10 @@ export default function Cart() {
             )}
 
             <div className="cart-total">
-              <span>Total:</span>
-              <strong>${subtotal.toFixed(2)}</strong>
-            </div>
-          </div>
-
-          <div className="catalog">
-            <h2 className="section-title">Subscriptions</h2>
-            <WheelCarousel
-              items={list.filter((p) => p.service.toLowerCase().includes("subscription"))}
-              renderItem={(p) => (
-                <ProductCard key={p.id} p={p} onAdd={() => handleAdd(p)} variant="subscription" />
-              )}
-            />
-
-            <h2 className="section-title">EZTech Accessories</h2>
-            <div className="grid">
-              {list.filter((p) => !p.service.toLowerCase().includes("subscription")).map((p) => (
-                <ProductCard key={p.id} p={p} onAdd={() => handleAdd(p)} />
-              ))}
+              <div className="cart-row"><span>Subtotal:</span><strong>${subtotal.toFixed(2)}</strong></div>
+              <div className="cart-row"><span>Tax (7%):</span><strong>${tax.toFixed(2)}</strong></div>
+              <div className="cart-row cart-row--total"><span>Total:</span><strong>${total.toFixed(2)}</strong></div>
+              <button className="btn-gold checkout-btn" disabled={!items.length} onClick={handleCheckout}>Checkout</button>
             </div>
           </div>
         </div>
@@ -111,23 +145,4 @@ function ProductCard({ p, onAdd, variant }) {
   );
 }
 
-function WheelCarousel({ items, renderItem }) {
-  const [index, setIndex] = useState(0);
-
-  return (
-    <div className="wheel">
-      <div className="wheel-track" style={{ transform: `translateX(calc(${index} * -260px))` }}>
-        {items.map((it) => (
-          <div className="wheel-item" key={it.id}>
-            {renderItem(it)}
-          </div>
-        ))}
-      </div>
-      <div className="wheel-dots">
-        {items.map((_, i) => (
-          <button key={i} className={`wheel-dot ${i === index ? "is-active" : ""}`} onClick={() => setIndex(i)} aria-label={`Go to slide ${i+1}`} />
-        ))}
-      </div>
-    </div>
-  );
-}
+// WheelCarousel removed in favor of inline grids per layout request
