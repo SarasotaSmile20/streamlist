@@ -5,6 +5,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import heart from "../assets/projector.gif";
 import "./NavBar.css";
+import "./Cart.css"; // for cart badge styling
+import { useCart } from "../features/cart/CartContext";
 
 /**
  * Gold-accent, glassy navbar to match the landing page.
@@ -15,6 +17,7 @@ import "./NavBar.css";
 export default function Navbar() {
   const email = getCurrentUserEmail();
   const isAdmin = email && isAdminEmail(email);
+  const { count } = useCart() || { count: 0 };
   return (
     <header className="navbar">
       <Link to="/streamlist" className="brand" aria-label="StreamList Home">
@@ -27,7 +30,7 @@ export default function Navbar() {
       <nav className="nav-actions">
         <NavItem to="/streamlist" label={VOCAB.tasks} />
         <NavItem to="/movies" label={VOCAB.navGazette} />
-        <NavItem to="/cart" label={VOCAB.cart} />
+        <CartNavItem to="/cart" label={VOCAB.cart} count={count} />
         <NavItem to="/about" label={VOCAB.about} />
         <NavItem to="/lounge" label="Lounge" />
         {isAdmin ? <NavItem to="/admin" label="Admin" /> : null}
@@ -46,6 +49,22 @@ function NavItem({ to, label }) {
       }
     >
       {label}
+    </NavLink>
+  );
+}
+
+function CartNavItem({ to, label, count }) {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        "nav-link cart-link" + (isActive ? " nav-link--active" : "")
+      }
+    >
+      <span>{label}</span>
+      <span className="cart-badge" aria-label={`Items in cart: ${count}`}>
+        {count}
+      </span>
     </NavLink>
   );
 }

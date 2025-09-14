@@ -748,10 +748,17 @@ select.input {
   100% { transform: translateX(60vw) scale(1); opacity: 1; }
 }
 
-/* Zeppelin flight: full viewport width from search bar */
-@keyframes fly-right-loop {
-  0% { transform: translateX(0) scale(1); opacity: 1; }
-  100% { transform: translateX(100vw) scale(1); opacity: 1; }
+/* Zeppelin flight: meandering path across the viewport */
+@keyframes fly-right-meander {
+  0%   { transform: translateX(0) translateY(0) rotate(-2deg)  scale(1); opacity: 1; }
+  12.5%{ transform: translateX(12.5vw) translateY(-2vh) rotate(1deg)  scale(1.02); }
+  25%  { transform: translateX(25vw)  translateY( 1.5vh) rotate(-1deg) scale(1.03); }
+  37.5%{ transform: translateX(37.5vw) translateY(-1vh) rotate(2deg)  scale(1.02); }
+  50%  { transform: translateX(50vw)  translateY( 2vh) rotate(-1deg)  scale(1.05); }
+  62.5%{ transform: translateX(62.5vw) translateY(-1.5vh) rotate(1deg) scale(1.03); }
+  75%  { transform: translateX(75vw)  translateY( 1vh) rotate(-1deg)  scale(1.02); }
+  87.5%{ transform: translateX(87.5vw) translateY(-1vh) rotate(1deg)  scale(1.01); }
+  100% { transform: translateX(100vw) translateY(0) rotate(0deg)    scale(1); opacity: 1; }
 }
 
 /* -----------------------------------------
@@ -924,13 +931,16 @@ body { color: var(--text-parchment); }
   isolation: isolate;
 }
 
-/* Floating airship */
-@keyframes airship-drift {
-  0% { transform: translateX(-20vw) translateY(0) scale(.95); opacity: 0; }
-  10% { opacity: .32; }
-  50% { transform: translateX(40vw) translateY(-6px) scale(1.08); opacity: .42; }
-  90% { opacity: .32; }
-  100% { transform: translateX(90vw) translateY(0) scale(1.02); opacity: 0; }
+/* Floating zeppelin background — gentle wandering, not a straight line */
+@keyframes zeppelin-bg-wander {
+  0%   { transform: translateX(-20vw) translateY( 0vh)   scale(.95) rotate(-1deg); opacity: 0; }
+  10%  { opacity: .30; }
+  20%  { transform: translateX(  0vw) translateY(-2.5vh) scale(1.00) rotate(1deg);  }
+  35%  { transform: translateX( 25vw) translateY( 1.5vh) scale(1.04) rotate(-1deg); }
+  50%  { transform: translateX( 45vw) translateY(-2vh)   scale(1.06) rotate(1deg);  opacity: .36; }
+  65%  { transform: translateX( 65vw) translateY( 2vh)   scale(1.05) rotate(-1deg); }
+  80%  { transform: translateX( 82vw) translateY(-1.5vh) scale(1.03) rotate(1deg);  opacity: .30; }
+  100% { transform: translateX(100vw) translateY( 0vh)   scale(1.02) rotate(0deg);  opacity: 0; }
 }
 
 .playbill-bg::after {
@@ -938,13 +948,17 @@ body { color: var(--text-parchment); }
   position: absolute;
   top: 6vh;
   left: -20vw;
-  width: 640px;  /* doubled */
-  height: 320px; /* doubled */
-  background: url("../assets/airship.gif") center / contain no-repeat;
+  width: 960px;  /* larger for prominence */
+  height: 480px; /* keep aspect ratio */
+  background: url("../assets/steampunk-zepellin.gif") center / contain no-repeat;
   opacity: .3;
   filter: sepia(.35) saturate(1.05) contrast(1.05);
   pointer-events: none;
-  animation: airship-drift 40s linear infinite;
+  animation: zeppelin-bg-wander 60s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playbill-bg::after { animation: none; opacity: .18; }
 }
 
 /* Header */

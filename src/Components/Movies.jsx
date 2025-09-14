@@ -249,7 +249,7 @@ export default function Movies() {
         img.className = "vehicle-sprite";
         // Bigger, solid zeppelin. If the source has transparent background,
         // it will render correctly; otherwise it will still be solid over content.
-        const size = 96; // px
+        const size = 144; // px — make zeppelin larger
         Object.assign(img.style, {
           position: "fixed",
           width: `${size}px`,
@@ -257,13 +257,13 @@ export default function Movies() {
           objectFit: "contain",
           pointerEvents: "none",
           zIndex: 2147483647,
-          // Slower, fully opaque, continuous loop across full screen
-          animation: "fly-right-loop 14000ms linear infinite",
+          // Slower, fully opaque, continuous loop with a gentle meander
+          animation: "fly-right-meander 16000ms ease-in-out infinite",
         });
         document.body.appendChild(img);
         dozerRef.current = img;
       }
-      const size = parseInt(img.style.width, 10) || 96;
+      const size = parseInt(img.style.width, 10) || 144;
       Object.assign(img.style, {
         left: `${rect.left}px`,
         top: `${rect.top + rect.height / 2 - size / 2}px`,

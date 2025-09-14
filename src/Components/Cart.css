@@ -1,0 +1,59 @@
+/* Simple cart/catalog styling that matches the steampunk theme */
+.cart-grid { display: block; }
+
+@media (max-width: 1000px) {
+  .cart-grid { grid-template-columns: 1fr; }
+}
+
+.section-title { font-weight: 700; letter-spacing: 0.3px; margin: 12px 0 10px; }
+.catalog .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+
+.card--subscription { box-shadow: 0 0 0 1px rgba(255,215,141,0.2) inset, 0 10px 24px rgba(0,0,0,0.35); }
+.card { background: rgba(18, 14, 10, 0.6); border: 1px solid rgba(194, 158, 89, 0.35); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.card-img { width: 100%; height: 140px; object-fit: contain; background: radial-gradient(120px 80px at 30% 40%, rgba(255,219,141,0.15), rgba(0,0,0,0.2)); }
+.card--subscription .card-img { height: 80px; }
+.card--subscription .card-body { padding: 8px 10px; }
+.card--subscription .card-actions { padding: 8px 10px; }
+.card--subscription .btn-gold { padding: 5px 8px; font-size: 13px; }
+.card-img--tint-gold { filter: sepia(1) saturate(2.2) hue-rotate(355deg) brightness(1.05); }
+.card-body { padding: 10px 12px; flex: 1; }
+.card-title { font-weight: 600; margin-bottom: 4px; }
+.card-sub { font-size: 12px; opacity: 0.8; margin-bottom: 6px; }
+.card-price { font-weight: 600; color: #f2d38b; }
+.card-actions { padding: 10px 12px; border-top: 1px solid rgba(194, 158, 89, 0.25); display: flex; justify-content: flex-end; }
+
+.btn-gold { background: linear-gradient(180deg,#d4b46a,#b68a2b); border: 1px solid #704f10; color: #1b1208; font-weight: 700; border-radius: 8px; padding: 6px 10px; }
+.btn-gold:hover { filter: brightness(1.05); }
+.btn-gold-outline { border-radius: 8px; }
+.btn-sm { padding: 4px 8px; font-size: 12px; }
+.btn-link { background: none; border: none; color: #f2d38b; text-decoration: underline; cursor: pointer; }
+
+.alert-warn { background: rgba(192, 31, 31, 0.15); border: 1px solid rgba(192,31,31,0.5); color: #ffd4d4; padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; }
+
+.cart-panel { background: rgba(18, 14, 10, 0.6); border: 1px solid rgba(194, 158, 89, 0.35); border-radius: 12px; padding: 12px; width: 360px; margin-left: auto; margin-bottom: 16px; position: static; }
+.cart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cart-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.cart-item { display: grid; grid-template-columns: 56px 1fr auto auto; gap: 10px; align-items: center; border-bottom: 1px dashed rgba(194,158,89,0.25); padding-bottom: 8px; }
+.cart-thumb { width: 56px; height: 56px; object-fit: contain; background: rgba(0,0,0,0.2); border-radius: 6px; }
+.cart-main { }
+.cart-title { font-weight: 600; }
+.cart-sub { font-size: 12px; opacity: 0.75; }
+.cart-price { font-size: 13px; color: #f2d38b; margin-top: 2px; }
+.cart-qty { display: flex; align-items: center; gap: 6px; }
+.btn-qty { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(194, 158, 89, 0.6); border-radius: 6px; background: rgba(0,0,0,0.2); color: #f2d38b; }
+.qty-input { width: 56px; padding: 4px 6px; border-radius: 6px; border: 1px solid rgba(194,158,89,0.35); background: rgba(0,0,0,0.25); color: #f7e8c4; }
+.remove { font-size: 12px; opacity: 0.85; }
+
+.cart-total { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 8px; border-top: 1px solid rgba(194,158,89,0.25); font-size: 16px; }
+
+/* Navbar cart badge */
+.cart-link { display: inline-flex; align-items: center; gap: 6px; }
+.cart-badge { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 12px; background: #b68a2b; color: #1b1208; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; border: 1px solid #704f10; }
+
+/* Wheel carousel for subscriptions */
+.wheel { position: relative; display: block; margin-bottom: 10px; overflow: hidden; z-index: 0; }
+.wheel-track { display: grid; grid-auto-flow: column; grid-auto-columns: 260px; gap: 16px; transition: transform 300ms ease; }
+.wheel-item { }
+.wheel-dots { display: flex; gap: 6px; justify-content: center; margin-top: 8px; grid-column: 1 / -1; }
+.wheel-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid #b88a2b; background: rgba(184,138,43,0.25); }
+.wheel-dot.is-active { background: #b88a2b; box-shadow: 0 0 0 2px rgba(255,215,141,0.2); }
