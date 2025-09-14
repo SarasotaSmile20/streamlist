@@ -2,6 +2,7 @@ import list from "../data";
 import { useMemo, useState } from "react";
 import { useCart } from "../features/cart/CartContext";
 import cat from "../assets/cat.gif";
+import placeholder from "../assets/key.jpeg";
 import "./Cart.css";
 
 export default function Cart() {
@@ -91,7 +92,15 @@ export default function Cart() {
               <ul className="cart-list">
                 {items.map((it) => (
                   <li key={it.id} className="cart-item">
-                    <img className="cart-thumb" src={it.img} alt="" />
+                    <img
+                      className="cart-thumb"
+                      src={it.img}
+                      alt=""
+                      onError={(e) => {
+                        e.currentTarget.src = placeholder;
+                        e.currentTarget.onerror = null;
+                      }}
+                    />
                     <div className="cart-main">
                       <div className="cart-title">{it.service}</div>
                       <div className="cart-sub">{it.serviceInfo}</div>
@@ -132,7 +141,15 @@ export default function Cart() {
 function ProductCard({ p, onAdd, variant }) {
   return (
     <div className={`card ${variant === "subscription" ? "card--subscription" : ""}`}>
-      <img className={`card-img ${variant === "subscription" ? "card-img--tint-gold" : ""}`} src={p.img} alt="" />
+      <img
+        className={`card-img ${variant === "subscription" ? "card-img--tint-gold" : ""}`}
+        src={p.img}
+        alt=""
+        onError={(e) => {
+          e.currentTarget.src = placeholder;
+          e.currentTarget.onerror = null;
+        }}
+      />
       <div className="card-body">
         <div className="card-title">{p.service}</div>
         <div className="card-sub">{p.serviceInfo}</div>

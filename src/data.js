@@ -30,8 +30,7 @@ const list = [
     service: "Social Media Sharing Subscription",
     serviceInfo: "Share your list",
     price: 2.99,
-    // Replaced with a stable SVG icon hosted on Wikimedia to avoid loading issues
-    img: "https://upload.wikimedia.org/wikipedia/commons/8/8b/OOjs_UI_icon_share-ltr.svg",
+    img: "/icons/share.svg",   // ✅ updated to your local share icon
     amount: 1,
   },
   {
