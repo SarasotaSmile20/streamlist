@@ -734,7 +734,7 @@ select.input {
   .favorites-aside { position: static; }
 }
 
-/* Drive-right animations for bulldozer.gif */
+/* Drive-right animations (zeppelin) */
 /* Legacy one-shot (kept for reference) */
 @keyframes drive-right-fade {
   0% { transform: translateX(0) scale(1); opacity: 1; }
@@ -746,6 +746,12 @@ select.input {
 @keyframes drive-right-loop {
   0% { transform: translateX(0) scale(1); opacity: 1; }
   100% { transform: translateX(60vw) scale(1); opacity: 1; }
+}
+
+/* Zeppelin flight: full viewport width from search bar */
+@keyframes fly-right-loop {
+  0% { transform: translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateX(100vw) scale(1); opacity: 1; }
 }
 
 /* -----------------------------------------

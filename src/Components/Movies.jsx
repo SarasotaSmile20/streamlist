@@ -9,7 +9,7 @@ import letterGif from "../assets/Letter.gif";
 import clockGif from "../assets/Clock.gif"; // retained if used elsewhere
 import keyImg from "../assets/key.jpeg";
 import dinoGif from "../assets/dino.gif";
-import bulldozerGif from "../assets/bulldozer.gif";
+import zeppelinGif from "../assets/steampunk-zepellin.gif";
 import heartGif from "../assets/heart.gif";
 
 /**
@@ -35,6 +35,47 @@ export default function Movies() {
   const { items, dispatch } = usePersistentList();
   const [selected, setSelected] = useState({}); // id:boolean
   const [favSelected, setFavSelected] = useState({}); // favorites selection
+
+  // Create a transparent-background version of key.jpeg at runtime
+  const [keyPngUrl, setKeyPngUrl] = useState(null);
+  useEffect(() => {
+    let revoked = null;
+    try {
+      const img = new Image();
+      img.decoding = "async";
+      img.src = keyImg;
+      img.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          const w = img.naturalWidth || img.width || 64;
+          const h = img.naturalHeight || img.height || 64;
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0, w, h);
+          const data = ctx.getImageData(0, 0, w, h);
+          const px = data.data;
+          // Chroma key: remove near-white and near-light-gray neutral squares
+          for (let i = 0; i < px.length; i += 4) {
+            const r = px[i], g = px[i + 1], b = px[i + 2];
+            const max = Math.max(r, g, b);
+            const min = Math.min(r, g, b);
+            const neutral = (max - min) < 18; // low saturation
+            if ((r > 215 && g > 215 && b > 215 && neutral) ||
+                (r > 195 && g > 195 && b > 195 && neutral)) {
+              px[i + 3] = 0; // transparent
+            }
+          }
+          ctx.putImageData(data, 0, 0);
+          const url = canvas.toDataURL("image/png");
+          setKeyPngUrl(url);
+        } catch (_) { /* ignore */ }
+      };
+    } catch (_) { /* ignore */ }
+    return () => {
+      if (revoked) URL.revokeObjectURL(revoked);
+    };
+  }, []);
 
   const clearSearch = useCallback(() => {
     setQuery("");
@@ -168,7 +209,7 @@ export default function Movies() {
     clearSelection();
   }
 
-  // Visual flair: slower, opaque bulldozer that loops when triggered
+  // Visual flair: slower, opaque zeppelin that loops when triggered
   const dozerRef = useRef(null);
   const [dozerOn, setDozerOn] = useState(false);
 
@@ -187,41 +228,42 @@ export default function Movies() {
   }
 
   function handleAddToCabinet(e) {
-    startDozerLoop(e); // trigger looping bulldozer
+    startDozerLoop(e); // trigger looping zeppelin
     addSelectedToCabinet();
   }
 
-  // Create a single bulldozer that loops indefinitely once triggered
-  const btnRef = useRef(null);
+  // Create a single zeppelin that loops indefinitely once triggered
+  const searchRef = useRef(null);
   useEffect(() => {
     if (!dozerOn) return;
-    const btn = btnRef.current;
-    if (!btn) return;
+    const anchor = searchRef.current;
+    if (!anchor) return;
 
     const ensureDozer = () => {
-      const rect = btn.getBoundingClientRect();
+      const rect = anchor.getBoundingClientRect();
       let img = dozerRef.current;
       if (!img) {
         img = document.createElement("img");
-        img.src = bulldozerGif;
+        img.src = zeppelinGif;
         img.alt = "";
         img.className = "vehicle-sprite";
         Object.assign(img.style, {
           position: "fixed",
-          width: "36px",
-          height: "36px",
+          width: "56px",
+          height: "56px",
           objectFit: "contain",
           pointerEvents: "none",
           zIndex: 2147483647,
-          // Slower, fully opaque, continuous loop
-          animation: "drive-right-loop 12000ms linear infinite",
+          // Slower, fully opaque, continuous loop across full screen
+          animation: "fly-right-loop 14000ms linear infinite",
+          mixBlendMode: "multiply",
         });
         document.body.appendChild(img);
         dozerRef.current = img;
       }
       Object.assign(img.style, {
-        left: `${rect.right + 8}px`,
-        top: `${rect.top + rect.height / 2 - 18}px`,
+        left: `${rect.left}px`,
+        top: `${rect.top + rect.height / 2 - 28}px`,
       });
     };
 
@@ -254,6 +296,7 @@ export default function Movies() {
           <form
             className="form form-movies"
             onSubmit={(e) => { e.preventDefault(); runSearch(1); }}
+            ref={searchRef}
           >
             <select
               className="input"
@@ -326,7 +369,6 @@ export default function Movies() {
             onClick={handleAddToCabinet}
             disabled={selectedCount === 0}
             title="Add selected to Cabinet"
-            ref={btnRef}
           >
             <img src={heartGif} alt="" className="shimmer-icon" style={{ width: 44, height: 44, objectFit: "contain", marginRight: 6 }} />
             Add to Cabinet
@@ -401,7 +443,7 @@ export default function Movies() {
                 title="Remove selected from treasures"
                 aria-label="Remove selected from treasures"
               >
-                <img src={keyImg} alt="" style={{ width: 44, height: 44, objectFit: "contain" }} />
+                <img src={keyPngUrl || keyImg} alt="" style={{ width: 44, height: 44, objectFit: "contain" }} />
                 Remove
               </button>
               <span className="muted" aria-live="polite">{favSelectedCount} selected</span>
