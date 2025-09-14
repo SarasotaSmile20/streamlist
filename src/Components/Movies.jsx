@@ -247,23 +247,26 @@ export default function Movies() {
         img.src = zeppelinGif;
         img.alt = "";
         img.className = "vehicle-sprite";
+        // Bigger, solid zeppelin. If the source has transparent background,
+        // it will render correctly; otherwise it will still be solid over content.
+        const size = 96; // px
         Object.assign(img.style, {
           position: "fixed",
-          width: "56px",
-          height: "56px",
+          width: `${size}px`,
+          height: `${size}px`,
           objectFit: "contain",
           pointerEvents: "none",
           zIndex: 2147483647,
           // Slower, fully opaque, continuous loop across full screen
           animation: "fly-right-loop 14000ms linear infinite",
-          mixBlendMode: "multiply",
         });
         document.body.appendChild(img);
         dozerRef.current = img;
       }
+      const size = parseInt(img.style.width, 10) || 96;
       Object.assign(img.style, {
         left: `${rect.left}px`,
-        top: `${rect.top + rect.height / 2 - 28}px`,
+        top: `${rect.top + rect.height / 2 - size / 2}px`,
       });
     };
 
