@@ -18,6 +18,7 @@ import Movies from "./Components/Movies";
 import MovieDetail from "./pages/MovieDetail";
 import TVTrailer from "./features/video/TVTrailer";
 import Cart from "./Components/Cart";
+import CreditCard from "./Components/CreditCard";
 import About from "./Components/About";
 import LoungeChat from "./Components/LoungeChat";
 
@@ -71,6 +72,7 @@ export default function App() {
           <Route path="/trailer/:id" element={<TVTrailer />} />
           {/** Watchlist removed */}
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<CreditCard />} />
           <Route path="/about" element={<About />} />
           <Route path="/lounge" element={<LoungeChat />} />
 

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../lib/firebase"; // local import
@@ -20,6 +22,7 @@ export default function CurtainLogin() {
   const [pass, setPass] = useState("");
   const [msg, setMsg] = useState("");
   const [working, setWorking] = useState(false);
+  const [oauthWorking, setOauthWorking] = useState(false);
   const [resetInfo, setResetInfo] = useState("");
 
   useEffect(() => {
@@ -111,6 +114,46 @@ export default function CurtainLogin() {
     }
   };
 
+  const onGoogle = async () => {
+    if (oauthWorking || working) return;
+    setMsg("");
+    setResetInfo("");
+    try {
+      setOauthWorking(true);
+      const provider = new GoogleAuthProvider();
+      const cred = await signInWithPopup(auth, provider);
+      const user = cred.user;
+
+      try {
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            email: user.email || "",
+            lastLoginAt: serverTimestamp(),
+            provider: "google",
+          },
+          { merge: true }
+        );
+      } catch {}
+
+      navigate("/streamlist", { replace: true });
+    } catch (err) {
+      console.error(err);
+      const code = err?.code || "auth/error";
+      const map = {
+        "auth/popup-closed-by-user": "Sign-in popup closed. Try again.",
+        "auth/cancelled-popup-request": "Popup already open.",
+        "auth/account-exists-with-different-credential":
+          "Use the provider linked to this email.",
+        "auth/operation-not-allowed":
+          "Google sign-in is disabled. Enable in Firebase Console.",
+      };
+      setMsg(map[code] || "Google sign-in failed. Please try again.");
+    } finally {
+      setOauthWorking(false);
+    }
+  };
+
   return (
     <main className="landing-hero">
       <header className="landing-head">
@@ -173,6 +216,16 @@ export default function CurtainLogin() {
           >
             <button type="submit" className="btn-gold" disabled={working}>
               {working ? "Checking..." : "Present Your Papers"}
+            </button>
+
+            <button
+              type="button"
+              className="btn-gold-outline"
+              onClick={onGoogle}
+              disabled={oauthWorking}
+              aria-label="Sign in with Google"
+            >
+              {oauthWorking ? "Opening Google..." : "Sign in with Google"}
             </button>
 
             <button

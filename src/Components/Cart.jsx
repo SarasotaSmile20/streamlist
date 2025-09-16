@@ -1,11 +1,13 @@
 import list from "../data";
 import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../features/cart/CartContext";
 import cat from "../assets/cat.gif";
 import placeholder from "../assets/key.jpeg";
 import "./Cart.css";
 
 export default function Cart() {
+  const navigate = useNavigate();
   const { items, addToCart, removeFromCart, increment, setQuantity, subtotal, clearCart } = useCart();
   const [notice, setNotice] = useState(null);
 
@@ -27,10 +29,7 @@ export default function Cart() {
 
   const handleCheckout = () => {
     if (!items.length) return;
-    // Simple placeholder checkout action
-    setNotice(`Checked out successfully. Total charged: $${total.toFixed(2)}`);
-    setTimeout(() => setNotice(null), 4000);
-    clearCart();
+    navigate("/checkout");
   };
 
   // Helpers to segment catalog

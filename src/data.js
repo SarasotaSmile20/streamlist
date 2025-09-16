@@ -30,7 +30,7 @@ const list = [
     service: "Social Media Sharing Subscription",
     serviceInfo: "Share your list",
     price: 2.99,
-    img: "/icons/share.svg",   // ✅ updated to your local share icon
+    img: "/share.svg",   // point to public/share.svg
     amount: 1,
   },
   {
@@ -38,7 +38,7 @@ const list = [
     service: "EZ Tech T-Shirt",
     serviceInfo: "Show your List to the World!!!",
     price: 25.99,
-    img: "https://cdn.creazilla.com/cliparts/5548105/tie-dye-t-shirt-clipart-md.png",
+    img: "/icons/tshirt1.svg",
     amount: 2000,
   },
   {
@@ -46,7 +46,7 @@ const list = [
     service: "EZ Techplosion",
     serviceInfo: "Share your List to all!!!",
     price: 25.99,
-    img: "https://cdn.creazilla.com/cliparts/7487471/tie-dye-t-shirt-clipart-md.png",
+    img: "/icons/tshirt2.svg",
     amount: 1400,
   },
   {
@@ -54,7 +54,7 @@ const list = [
     service: "EZ Techmerizing",
     serviceInfo: "Techmerize your friends",
     price: 25.99,
-    img: "https://cdn.creazilla.com/cliparts/5632313/tie-dye-t-shirt-clipart-sm.png",
+    img: "/icons/tshirt3.svg",
     amount: 1090,
   },
   {
@@ -62,7 +62,7 @@ const list = [
     service: "EZ Tech Case",
     serviceInfo: "Mesmerize your friends",
     price: 20.99,
-    img: "https://cdn.creazilla.com/9ef436f9e9e4cf2733c43b7e61d327d2.jpeg",
+    img: "/icons/case.svg",
     amount: 10090,
   },
 ];
